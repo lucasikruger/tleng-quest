@@ -93,12 +93,18 @@ const EXAMINERS = {
   becher: {
     name: "Becher", icon: "🧙‍♀️", star: true,
     tag: "⭐ TOMÓ EL ÚLTIMO FINAL — este es el entrenamiento que importa",
-    style: `Sos Verónica Becher tomando el final de Teoría de Lenguajes (FCEyN-UBA). Tu estilo REAL
-(documentado en finales 2016-2024): pedís ALGORITMOS con justificación de correctitud y COMPLEJIDAD
-de peor caso, verdadero/falso con justificación rigurosa, conteo de autómatas (cuántos AFD/AFND/AP
-con k estados), y variantes creativas (autómatas co-deterministicos, cotas ajustadas). Sos exigente
-pero justa: si el estudiante da un algoritmo sin complejidad, SIEMPRE repreguntás "¿y la complejidad?".
-Si dice algo vago, pedís precisión formal.` },
+    style: `Sos Verónica Becher tomando el final de Teoría de Lenguajes (FCEyN-UBA). Tomá EXACTAMENTE
+como ella (patrón y preguntas reales abajo). Sos exigente pero justa y directa; hablás sobrio, sin
+adornos. Si dan un algoritmo sin complejidad, SIEMPRE repreguntás "¿y la complejidad de peor caso?".
+Si algo es vago, exigís el enunciado formal (cuantificadores en orden).
+
+${(window.BECHER && window.BECHER.patron) || ""}
+
+BANCO DE PREGUNTAS REALES DE BECHER (elegí de acá, o adaptá un parámetro; NO inventes preguntas
+de otro estilo). Arrancá el examen con su Ej 1 típico: pedile que demuestre "el teorema que más le
+guste", y sobre lo que elija exigí enunciado exacto + demo. Después seguí con algoritmos+complejidad
+y algún conteo:
+${(window.BECHER && window.BECHER.preguntas || []).map((q, i) => `${i + 1}. ${q}`).join("\n")}` },
   jacobo: {
     name: "Jacobo", icon: "🧙‍♂️",
     tag: "oral clásico en pizarrón",
@@ -246,22 +252,23 @@ async function chatTurn(addBubble) {
   CH.busy = false;
 }
 
-/* ---------- FINAL ORAL SIMULADO ---------- */
+/* ---------- FINAL ORAL SIMULADO (foco: Becher) ---------- */
 route("oral", (el, [exId, temaId]) => {
   if (!exId) {
     el.innerHTML = `
     <div class="crumb"><a href="#/">Inicio</a> / Final simulado</div>
     <h1>🎤 Final oral simulado</h1>
-    <p style="color:var(--ink2)">Claude te toma el final CON EL ESTILO REAL del tomador (sacado de 20 finales
-    documentados). 4 preguntas, repreguntas, y una NOTA honesta con qué repasar. XP = nota × 10.</p>
-    <div class="grid c2">${Object.entries(EXAMINERS).map(([id, ex]) => `
-      <div class="card click" style="${ex.star ? "border-color:var(--warn)" : ""}" onclick="go('oral/${id}')">
-        <div style="font-size:2.4rem">${ex.icon}</div>
-        <h3>${ex.name} ${ex.star ? "⭐" : ""}</h3>
-        <p style="color:${ex.star ? "var(--warn-hi)" : "var(--ink2)"};font-size:.9rem"><b>${ex.tag}</b></p>
-        <p style="color:var(--ink2);font-size:.85rem">${id === "becher" ? "Algoritmos + complejidad, V/F, conteo. Escrito, a veces a libro abierto." : "Demos de la teórica, oral en pizarrón, te guía si te trabás."}</p>
-      </div>`).join("")}
+    <p style="color:var(--ink2)">Claude te toma el final CON EL ESTILO REAL de la tomadora, usando sus
+    preguntas de finales reales. Repreguntas, y una NOTA honesta con qué repasar. XP = nota × 10.</p>
+    <div class="card click mb" style="border-color:var(--warn);background:linear-gradient(135deg,var(--surface),rgba(217,119,6,.12))" onclick="go('oral/becher')">
+      <div class="flex"><span style="font-size:2.8rem">🧙‍♀️</span>
+        <div><span class="tag hot">⭐ TOMÓ EL ÚLTIMO FINAL</span>
+          <h2 style="margin:.2em 0">Rendir con Becher</h2>
+          <p style="color:var(--warn-hi);margin:0">Algoritmos + <b>correctitud</b> + <b>complejidad</b>, conteo de autómatas, "demostrá el teorema que quieras". Con su banco de preguntas reales.</p></div>
+        <div class="spacer"></div><span class="btn warn">▶ Empezar</span></div>
     </div>
+    <p style="color:var(--muted);font-size:.85rem">¿Te llega a tomar otro?
+      <a href="#/oral/jacobo">Rendir con Jacobo</a> (demos de la teórica, estilo pizarrón).</p>
     ${(!CLI_PROXY && !apiCfg().key) ? `<div class="card mt" style="border-color:var(--warn)"><b>🔑 Falta conectar Claude</b> — <a href="#/ajustes">poné tu API key acá</a> (2 min).</div>` : CLI_PROXY ? `<div class="card mt" style="border-color:var(--ok)"><b>✅ Usando tu sesión de Claude Code</b> — sin API key.</div>` : ""}`;
     return;
   }
