@@ -19,7 +19,22 @@ function katexify(el) {
       ],
       throwOnError: false,
     });
+    mathify(el);
   }
+}
+/* marca los párrafos/ítems que son SOLO una fórmula (sin texto alrededor)
+   para darles fondo destacado — pedido: "usar fondo cuando escribís solo matemática en una línea" */
+function mathify(root) {
+  root.querySelectorAll("p, li").forEach((p) => {
+    if (p.classList.contains("mathline")) return;
+    const kids = [...p.childNodes];
+    if (kids.some((n) => n.nodeType === 3 && n.textContent.trim())) return; // hay texto suelto
+    const els = kids.filter((n) => n.nodeType === 1);
+    if (!els.length) return;
+    // solo si todo son fórmulas inline (display math $$ ya tiene su propio bloque)
+    const allInline = els.every((n) => n.classList && n.classList.contains("katex") && !n.classList.contains("katex-display"));
+    if (allInline) p.classList.add("mathline");
+  });
 }
 /* enlaces internos de los .md: (XX.md) -> ruta interna; (../...) -> archivo del repo */
 function fixLinks(el) {
