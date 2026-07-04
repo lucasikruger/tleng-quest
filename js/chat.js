@@ -2,6 +2,8 @@
    Módulo ES. El SDK de Anthropic SOLO se importa si TLENG.claude está ON,
    así el deploy público (claude:false) no carga nada externo ni ofrece la función. */
 
+const CLI_PROXY = !!(window.TLENG && window.TLENG.cliProxy);
+
 if (!window.TLENG || !window.TLENG.claude) {
   // Claude desactivado en esta build: rutas que explican y redirigen.
   const off = (el, label) => { el.innerHTML = `
@@ -11,7 +13,8 @@ if (!window.TLENG || !window.TLENG.claude) {
       <h2>${label} está desactivado en esta versión</h2>
       <p style="color:var(--ink2)">El chat con Claude no está habilitado en este deploy.
       Si es tu copia, activá <code>claude: true</code> en <code>config.js</code>
-      (o abrí la app con <code>?claude=1</code>) y poné tu API key.</p>
+      (o abrí la app con <code>?claude=1</code>) y poné tu API key —
+      o corré el server con <code>TLENG_CLI=1</code> para usar tu sesión de Claude Code sin key.</p>
       <a class="btn" href="#/camino">🗺️ Seguir con el camino</a>
       <a class="btn ghost" href="#/config">⚙️ Config</a>
     </div>`; };
@@ -20,8 +23,11 @@ if (!window.TLENG || !window.TLENG.claude) {
   route("ajustes", (el) => off(el, "🔑 Conexión con Claude"));
   const p0 = (location.hash.replace(/^#\/?/, "").split("/")[0] || "");
   if (["oral", "profe", "ajustes"].includes(p0)) render();
+} else if (CLI_PROXY) {
+  // Proxy por CLI local: no hace falta API key ni SDK; se usa /api/chat.
+  initClaude(null);
 } else {
-  // Claude ON: cargar el SDK dinámicamente y registrar las rutas reales.
+  // Claude ON con API key: cargar el SDK dinámicamente.
   const Anthropic = (await import("https://cdn.jsdelivr.net/npm/@anthropic-ai/sdk/+esm")).default;
   initClaude(Anthropic);
 }
@@ -154,7 +160,7 @@ function chatShell(el, { title, sub, backRoute, system, greeting, onEnd }) {
   <div id="chlog" style="display:flex;flex-direction:column;gap:10px;margin:14px 0;min-height:200px"></div>
   <div class="flex"><input type="text" id="chin" placeholder="tu respuesta…" style="flex:1" maxlength="2000">
     <button class="btn" id="chgo">Enviar</button></div>
-  <p style="color:var(--muted);font-size:.78rem;margin-top:6px">modelo: ${MODEL()} · <a href="#/ajustes">cambiar</a></p>`;
+  <p style="color:var(--muted);font-size:.78rem;margin-top:6px">${CLI_PROXY ? "vía tu sesión de Claude Code (sin API key)" : `modelo: ${MODEL()} · <a href="#/ajustes">cambiar</a>`}</p>`;
   const log = document.getElementById("chlog");
   const addBubble = (who, html) => {
     const b = document.createElement("div");
@@ -184,22 +190,45 @@ function chatShell(el, { title, sub, backRoute, system, greeting, onEnd }) {
   if (greeting) send(greeting);
 }
 
+/* aplana system + historial en un solo prompt de texto (para el CLI) */
+function flattenForCLI() {
+  const sys = (CH.system && CH.system[0] && CH.system[0].text) || "";
+  const lines = CH.messages.map((m) => {
+    const txt = typeof m.content === "string" ? m.content
+      : (m.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n");
+    return (m.role === "user" ? "ESTUDIANTE: " : "EXAMINADOR: ") + txt;
+  });
+  const prompt = lines.join("\n\n") + "\n\nEXAMINADOR:";
+  return { system: sys, prompt };
+}
+
 async function chatTurn(addBubble) {
-  const cl = client();
-  if (!cl) { addBubble("ai", `Falta la API key → <a href="#/ajustes">configurala acá</a> y volvé.`); return; }
   CH.busy = true;
   const bubble = addBubble("ai", `<span style="color:var(--muted)">pensando…</span>`);
   try {
-    const stream = cl.messages.stream({
-      model: MODEL(), max_tokens: 1500,
-      system: CH.system, messages: CH.messages,
-    });
-    let acc = "";
-    stream.on("text", (t) => { acc += t; bubble.textContent = acc; });
-    const final = await stream.finalMessage();
-    if (final.stop_reason === "refusal") { bubble.textContent = "(me negué a responder eso — probá reformular)"; CH.busy = false; return; }
-    acc = final.content.filter((b) => b.type === "text").map((b) => b.text).join("");
-    CH.messages.push({ role: "assistant", content: final.content });
+    let acc;
+    if (CLI_PROXY) {
+      // usa tu sesión de Claude Code vía el server (sin API key)
+      const { system, prompt } = flattenForCLI();
+      const r = await fetch("/api/chat", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ system, prompt }),
+      });
+      const j = await r.json();
+      if (!r.ok || j.error) throw new Error(j.error || ("HTTP " + r.status));
+      acc = (j.text || "").trim();
+      CH.messages.push({ role: "assistant", content: acc });
+    } else {
+      const cl = client();
+      if (!cl) { bubble.innerHTML = `Falta la API key → <a href="#/ajustes">configurala acá</a> y volvé.`; CH.busy = false; return; }
+      const stream = cl.messages.stream({ model: MODEL(), max_tokens: 1500, system: CH.system, messages: CH.messages });
+      acc = "";
+      stream.on("text", (t) => { acc += t; bubble.textContent = acc; });
+      const final = await stream.finalMessage();
+      if (final.stop_reason === "refusal") { bubble.textContent = "(me negué a responder eso — probá reformular)"; CH.busy = false; return; }
+      acc = final.content.filter((b) => b.type === "text").map((b) => b.text).join("");
+      CH.messages.push({ role: "assistant", content: final.content });
+    }
     bubble.innerHTML = mdRender(acc);
     katexify(bubble);
     bubble.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -207,9 +236,11 @@ async function chatTurn(addBubble) {
     const m = acc.match(/NOTA:\s*(\d+)\s*\/\s*10/i);
     if (m && CH.onEnd && !CH.ended) { CH.ended = true; CH.onEnd(+m[1]); }
   } catch (e) {
+    const auth = Anthropic && e instanceof Anthropic.AuthenticationError;
+    const rate = Anthropic && e instanceof Anthropic.RateLimitError;
     bubble.innerHTML = `<span style="color:var(--bad-hi)">⚠️ ${
-      e instanceof Anthropic.AuthenticationError ? 'API key inválida — <a href="#/ajustes">revisala</a>'
-      : e instanceof Anthropic.RateLimitError ? "rate limit: esperá un toque y reintentá"
+      auth ? 'API key inválida — <a href="#/ajustes">revisala</a>'
+      : rate ? "rate limit: esperá un toque y reintentá"
       : (e.message || e)}</span>`;
   }
   CH.busy = false;
@@ -231,7 +262,7 @@ route("oral", (el, [exId, temaId]) => {
         <p style="color:var(--ink2);font-size:.85rem">${id === "becher" ? "Algoritmos + complejidad, V/F, conteo. Escrito, a veces a libro abierto." : "Demos de la teórica, oral en pizarrón, te guía si te trabás."}</p>
       </div>`).join("")}
     </div>
-    ${!apiCfg().key ? `<div class="card mt" style="border-color:var(--warn)"><b>🔑 Falta conectar Claude</b> — <a href="#/ajustes">poné tu API key acá</a> (2 min).</div>` : ""}`;
+    ${(!CLI_PROXY && !apiCfg().key) ? `<div class="card mt" style="border-color:var(--warn)"><b>🔑 Falta conectar Claude</b> — <a href="#/ajustes">poné tu API key acá</a> (2 min).</div>` : CLI_PROXY ? `<div class="card mt" style="border-color:var(--ok)"><b>✅ Usando tu sesión de Claude Code</b> — sin API key.</div>` : ""}`;
     return;
   }
   const ex = EXAMINERS[exId];
@@ -274,7 +305,7 @@ route("profe", (el, [temaId]) => {
       ${TEMAS.map((t) => `<div class="card click" onclick="go('profe/${t.id}')">
         <h3 style="font-size:.95rem">${t.icon} ${t.name}</h3></div>`).join("")}
     </div>
-    ${!apiCfg().key ? `<div class="card mt" style="border-color:var(--warn)"><b>🔑 Falta conectar Claude</b> — <a href="#/ajustes">poné tu API key acá</a>.</div>` : ""}`;
+    ${(!CLI_PROXY && !apiCfg().key) ? `<div class="card mt" style="border-color:var(--warn)"><b>🔑 Falta conectar Claude</b> — <a href="#/ajustes">poné tu API key acá</a>.</div>` : ""}`;
     return;
   }
   const t = TEMA_BY_ID[temaId];

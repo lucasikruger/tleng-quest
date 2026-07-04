@@ -54,29 +54,38 @@ gramáticas/regex que sobre-generan.
 - Guía: `python3 build_content.py` (lee `../Guia_Final/*.md`).
 - Bancos: editá `data/src/*.json` → `python3 pack_data.py`.
 
-## Compartir / deploy
+## Deploy
 
-Es una web **estática** — se sube tal cual a GitHub Pages, Netlify, Vercel o cualquier hosting.
+Es una app estática + un server Node mínimo (`server.js`, sin dependencias) que la sirve y,
+opcionalmente, hace de puente hacia Claude.
 
-### Antes de subir, editá `config.js`
-```js
-window.TLENG_CONFIG = {
-  claude: false,   // false = deploy público: NO carga el SDK ni ofrece el chat
-};
+### Railway (recomendado)
+1. Conectá el repo. Railway detecta Node por el `package.json` y corre `npm start` → `node server.js`.
+2. El server escucha en el `$PORT` que Railway inyecta. No hay que configurar nada más.
+3. **Variables de entorno** (Settings → Variables):
+   - `TLENG_CLAUDE=0` (default) → el chat con Claude queda **oculto** y no se carga el SDK. Sitio 100% estático.
+   - `TLENG_CLAUDE=1` → muestra el chat; cada visitante pone **su propia** API key (se guarda en su navegador).
+   - **No** uses `TLENG_CLI` en Railway (ver abajo).
+
+### GitHub Pages / cualquier hosting estático
+También funciona sin el server: subí los archivos y listo (usa el `config.js` tal cual, con
+`claude: false`). El chat con Claude queda oculto salvo que edites `config.js` o abras con `?claude=1`.
+
+## 🆓 Usar el simulador SIN API key (local, con tu sesión de Claude Code)
+
+Si tenés **Claude Code** instalado y logueado en tu máquina, podés usar el final oral / profe
+**sin ninguna API key** — el server llama al CLI `claude -p` con tu sesión:
+
+```bash
+TLENG_CLI=1 npm start        # → http://localhost:8742, Claude ON vía tu sesión
 ```
-- Con `claude: false` la app **no descarga nada de Anthropic** y oculta el final oral / profe.
-  (Verificado: con esa opción el SDK no aparece en las requests de red.)
-- Cada visitante puede igual activar Claude en su propio navegador (⚙️ Config → Activar) y poner
-  **su** API key — nunca se usa la tuya ni queda en el repo.
-- Al entrar se muestra un aviso de que el material es de la **cursada 1C 2024** (antes del 2C).
 
-### Override por URL (sin tocar `config.js`)
-- `?claude=0` — oculta Claude · `?claude=1` — lo activa.
-- Ej: `https://tu-usuario.github.io/tleng-quest/?claude=0`
+- No necesitás `sk-ant-…`: usa tu login de Claude Code (tu suscripción).
+- ⚠️ **Sólo para uso local/personal.** Nunca actives `TLENG_CLI=1` en un server público:
+  cualquier visitante estaría usando *tu* cuenta. En Railway/hosting público dejá `TLENG_CLI` sin setear.
 
-### GitHub Pages en 30 segundos
-1. Subí la carpeta `webapp/` al repo (o su contenido a la raíz).
-2. Settings → Pages → Source: la rama y carpeta donde está `index.html`.
-3. Listo: `https://<usuario>.github.io/<repo>/`.
-
-> El progreso (XP, islas, quiz) vive en el localStorage de cada visitante — no se comparte ni se sube.
+## Config (recap)
+- `config.js` → `claude: true|false` (default del deploy).
+- Env vars del server: `PORT`, `TLENG_CLAUDE` (0/1), `TLENG_CLI` (0/1, sólo local).
+- Override por URL: `?claude=0` / `?claude=1`.
+- Al entrar, la app avisa que el material es de la **cursada 1C 2024** (antes del 2C).

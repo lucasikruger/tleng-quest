@@ -1,0 +1,12 @@
+{
+  "name": "tleng-quest",
+  "version": "1.0.0",
+  "private": true,
+  "description": "App interactiva tipo juego para preparar el final de Teoría de Lenguajes (FCEyN-UBA, 1C 2024)",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
