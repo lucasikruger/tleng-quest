@@ -396,6 +396,36 @@ route("trucos", (el) => {
   });
 });
 
+/* ---------- 📖 Glosario de símbolos (buscable) ---------- */
+route("glosario", (el) => {
+  const G = window.GLOSARIO || [];
+  el.innerHTML = `
+  <div class="crumb"><a href="#/">Inicio</a> / Símbolos</div>
+  <h1>📖 Glosario de símbolos</h1>
+  <p style="color:var(--ink2)">Cómo se llama y qué significa cada símbolo de la materia. Buscá por símbolo o por nombre.</p>
+  <input type="text" id="glsearch" class="searchbox" placeholder="Buscar… (ej: sigma, lambda, delta, ⊢, pila)">
+  <div id="glbody"></div>`;
+  const body = document.getElementById("glbody");
+  const render = (q) => {
+    q = (q || "").toLowerCase().trim();
+    body.innerHTML = G.map((grp) => {
+      const items = grp.items.filter((it) => !q ||
+        (it.sym + " " + it.lee + " " + it.que + " " + grp.grupo).toLowerCase().includes(q));
+      if (!items.length) return "";
+      return `<div class="card mb"><h3 style="margin-top:0">${grp.grupo}</h3>
+        <table style="width:100%"><tr><th style="width:26%">símbolo</th><th style="width:24%">se lee</th><th>qué es</th></tr>
+        ${items.map((it) => `<tr>
+          <td><b style="font-size:1.05em">${it.sym}</b></td>
+          <td style="color:var(--ink2)">${it.lee}</td>
+          <td>${mdRender(it.que).replace(/^<p>|<\/p>\s*$/g, "")}</td></tr>`).join("")}
+        </table></div>`;
+    }).join("") || `<p style="color:var(--muted)">Nada coincide con "${q}".</p>`;
+    katexify(body);
+  };
+  render("");
+  document.getElementById("glsearch").addEventListener("input", (e) => render(e.target.value));
+});
+
 /* ---------- ⚙️ Config: estado de Claude ---------- */
 route("config", (el) => {
   el.innerHTML = `
