@@ -1,0 +1,722 @@
+[
+  {
+    "id": "01-01",
+    "topic": "01",
+    "level": 1,
+    "q": "¿Cuál de estas afirmaciones tipa bien y es verdadera?",
+    "options": [
+      "$\\lambda \\in \\Sigma$",
+      "$\\lambda \\subseteq \\Sigma^*$",
+      "$\\lambda \\in \\Sigma^*$",
+      "$\\Sigma^0 = \\lambda$"
+    ],
+    "correct": 2,
+    "explain": "$\\lambda$ es una cadena y $\\Sigma^*$ un conjunto de cadenas, así que $\\lambda \\in \\Sigma^*$ tipa y es verdadera. $\\lambda \\in \\Sigma$ compara una cadena con un conjunto de símbolos (no tipa), y $\\Sigma^0 = \\{\\lambda\\}$ es un lenguaje, no una cadena.",
+    "source": "01_lenguajes.md"
+  },
+  {
+    "id": "01-02",
+    "topic": "01",
+    "level": 1,
+    "q": "¿Cuál es el neutro de la concatenación de lenguajes?",
+    "options": [
+      "$\\emptyset$",
+      "$\\Lambda = \\{\\lambda\\}$",
+      "$\\Sigma^*$",
+      "$\\{\\emptyset\\}$"
+    ],
+    "correct": 1,
+    "explain": "$\\Lambda\\,\\mathcal{L} = \\mathcal{L}\\,\\Lambda = \\mathcal{L}$. Ojo: $\\emptyset$ es el ABSORBENTE ($\\emptyset\\,\\mathcal{L} = \\emptyset$), no el neutro; confundirlos es el error clásico.",
+    "source": "01_lenguajes.md"
+  },
+  {
+    "id": "01-03",
+    "topic": "01",
+    "level": 1,
+    "q": "$(\\alpha\\beta)^r$ es igual a…",
+    "options": [
+      "$\\alpha^r\\beta^r$",
+      "$\\beta\\alpha$",
+      "$(\\beta\\alpha)^r$",
+      "$\\beta^r\\alpha^r$"
+    ],
+    "correct": 3,
+    "explain": "El reverso invierte el ORDEN de los factores además de revertir cada uno: $(\\alpha\\beta)^r = \\beta^r\\alpha^r$. Escribir $\\alpha^r\\beta^r$ es el error típico al cerrar la inducción.",
+    "source": "01_lenguajes.md"
+  },
+  {
+    "id": "01-04",
+    "topic": "01",
+    "level": 2,
+    "q": "Sean $\\mathcal{L}_1=\\{a\\}$ y $\\mathcal{L}_2=\\{b\\}$. ¿Qué cadena testigo muestra que $(\\mathcal{L}_1\\cup\\mathcal{L}_2)^* \\neq \\mathcal{L}_1^*\\cup\\mathcal{L}_2^*$?",
+    "options": [
+      "$aa$",
+      "$\\lambda$",
+      "$ab$",
+      "$bb$"
+    ],
+    "correct": 2,
+    "explain": "$ab \\in (\\{a\\}\\cup\\{b\\})^*$ pero no está ni en $a^*$ ni en $b^*$: la clausura de la unión mezcla letras, la unión de clausuras no. $\\lambda$, $aa$ y $bb$ están en ambos lados, no separan nada.",
+    "source": "01_lenguajes.md"
+  },
+  {
+    "id": "01-05",
+    "topic": "01",
+    "level": 2,
+    "q": "Si $\\mathcal{L}=\\{a\\}$, ¿qué lenguaje es $(\\mathcal{L}^2)^*$?",
+    "options": [
+      "Las cadenas de $a$'s de longitud par (incluida $\\lambda$)",
+      "Todas las cadenas de $a$'s",
+      "Las cadenas de $a$'s de longitud $\\geq 2$",
+      "$\\{aa\\}$"
+    ],
+    "correct": 0,
+    "explain": "$\\mathcal{L}^2=\\{aa\\}$ y su clausura concatena bloques $aa$: longitudes $0, 2, 4, \\dots$ Este es el contraejemplo de bolsillo que separa por paridad de longitud.",
+    "source": "01_lenguajes.md"
+  },
+  {
+    "id": "01-06",
+    "topic": "01",
+    "level": 2,
+    "q": "$\\mathrm{Ini}(\\{ab,\\, b\\})$ es igual a…",
+    "options": [
+      "$\\{a, ab, b\\}$",
+      "$\\{\\lambda, a, ab, b\\}$",
+      "$\\{\\lambda, ab, b\\}$",
+      "$\\{a, b\\}$"
+    ],
+    "correct": 1,
+    "explain": "Los prefijos de $ab$ son $\\lambda, a, ab$ y los de $b$ son $\\lambda, b$ (con $\\beta$ vacío, la cadena entera es prefijo de sí misma). Olvidar $\\lambda$ o la cadena completa son los errores típicos.",
+    "source": "01_lenguajes.md"
+  },
+  {
+    "id": "01-07",
+    "topic": "01",
+    "level": 3,
+    "q": "Entre $(\\mathcal{L}_1\\cap\\mathcal{L}_2)^*$ y $\\mathcal{L}_1^*\\cap\\mathcal{L}_2^*$, ¿qué vale en general?",
+    "options": [
+      "Son iguales",
+      "Sólo $\\supseteq$",
+      "Sólo $\\subseteq$",
+      "No hay inclusión en ningún sentido"
+    ],
+    "correct": 2,
+    "explain": "Cada factor de $(\\mathcal{L}_1\\cap\\mathcal{L}_2)^*$ está en ambos lenguajes, así que $\\subseteq$ siempre vale. La igualdad falla: con $\\mathcal{L}_1=\\{a\\}$, $\\mathcal{L}_2=\\{aa\\}$ la intersección es $\\emptyset$ y $\\emptyset^*=\\Lambda$, pero $aa \\in a^* \\cap (aa)^*$.",
+    "source": "01_lenguajes.md"
+  },
+  {
+    "id": "01-08",
+    "topic": "01",
+    "level": 3,
+    "q": "$(\\mathcal{L}^+)^*$ es igual a…",
+    "options": [
+      "$\\mathcal{L}^+$",
+      "$(\\mathcal{L}^*)^+ \\setminus \\Lambda$",
+      "$\\mathcal{L}^* \\setminus \\Lambda$",
+      "$\\mathcal{L}^*$"
+    ],
+    "correct": 3,
+    "explain": "$(\\mathcal{L}^+)^n \\subseteq \\mathcal{L}^+$ colapsa las clausuras anidadas, y la estrella exterior agrega $\\lambda$: queda $\\Lambda \\cup \\mathcal{L}^+ = \\mathcal{L}^*$. Cuidado: NO es $\\mathcal{L}^+$, la estrella siempre mete la cadena vacía.",
+    "source": "01_lenguajes.md"
+  },
+  {
+    "id": "02-01",
+    "topic": "02",
+    "level": 1,
+    "q": "En la 5-upla $\\langle Q,\\Sigma,\\delta,q_0,F\\rangle$, ¿qué es lo ÚNICO que cambia entre AFD, AFND y AFND-$\\lambda$?",
+    "options": [
+      "El conjunto de finales $F$",
+      "La función de transición $\\delta$",
+      "El estado inicial",
+      "El alfabeto $\\Sigma$"
+    ],
+    "correct": 1,
+    "explain": "AFD: $\\delta: Q\\times\\Sigma \\to Q$; AFND: devuelve un CONJUNTO de estados; AFND-$\\lambda$: además admite $\\lambda$ como entrada. El resto de la tupla es idéntico en los tres modelos.",
+    "source": "02_automatas_finitos.md"
+  },
+  {
+    "id": "02-02",
+    "topic": "02",
+    "level": 1,
+    "q": "En un AFD $M$, $\\lambda \\in L(M)$ si y sólo si…",
+    "options": [
+      "$F \\neq \\emptyset$",
+      "hay algún estado final alcanzable desde $q_0$",
+      "$q_0 \\in F$",
+      "$\\delta(q_0,\\lambda) \\in F$"
+    ],
+    "correct": 2,
+    "explain": "$\\hat\\delta(q_0,\\lambda)=q_0$, así que la cadena vacía se acepta exactamente cuando el inicial es final. La opción con $\\delta(q_0,\\lambda)$ ni siquiera tipa: un AFD no tiene transiciones por $\\lambda$.",
+    "source": "02_automatas_finitos.md"
+  },
+  {
+    "id": "02-03",
+    "topic": "02",
+    "level": 1,
+    "q": "Para reconocer $L^c$ invirtiendo finales ($F' = Q \\setminus F$) tenés que partir de…",
+    "options": [
+      "un AFD completo (con $\\delta$ total)",
+      "cualquier AFND",
+      "un AFD, aunque sea incompleto",
+      "un AFND-$\\lambda$ sin ciclos de $\\lambda$"
+    ],
+    "correct": 0,
+    "explain": "Sólo vale sobre AFD con $\\delta$ total (completado con trampa). En un AFND invertir finales acepta de más (basta un camino), y en un AFD incompleto las cadenas que \"mueren\" no pasan al complemento.",
+    "source": "02_automatas_finitos.md"
+  },
+  {
+    "id": "02-04",
+    "topic": "02",
+    "level": 2,
+    "q": "Si $\\delta(q_0,\\lambda)=\\{q_1\\}$ y $\\delta(q_1,\\lambda)=\\{q_2\\}$ (sin otras flechas $\\lambda$), ¿cuánto vale $\\mathrm{Cl}_\\lambda(q_0)$?",
+    "options": [
+      "$\\{q_1, q_2\\}$",
+      "$\\{q_0, q_1\\}$",
+      "$\\{q_0, q_1, q_2\\}$",
+      "$\\{q_1\\}$"
+    ],
+    "correct": 2,
+    "explain": "La clausura-$\\lambda$ es la clausura transitivo-REFLEXIVA de las flechas $\\lambda$: incluye a $q_0$ mismo y encadena $q_0 \\to q_1 \\to q_2$. Olvidar el propio estado o cortar en un paso son los errores típicos.",
+    "source": "02_automatas_finitos.md"
+  },
+  {
+    "id": "02-05",
+    "topic": "02",
+    "level": 2,
+    "q": "En el autómata producto $A_1 \\times A_2$ para la INTERSECCIÓN $L_1 \\cap L_2$, los finales son…",
+    "options": [
+      "$F_1 \\cup F_2$",
+      "$(F_1\\times Q_2)\\cup(Q_1\\times F_2)$",
+      "$F_1 \\times F_2$",
+      "$(Q_1\\times Q_2)\\setminus(F_1\\times F_2)$"
+    ],
+    "correct": 2,
+    "explain": "El producto corre los dos AFD en paralelo y para intersección AMBAS coordenadas deben ser finales: $F_1 \\times F_2$. $(F_1\\times Q_2)\\cup(Q_1\\times F_2)$ es la variante para la unión.",
+    "source": "02_automatas_finitos.md"
+  },
+  {
+    "id": "02-06",
+    "topic": "02",
+    "level": 2,
+    "q": "Determinizás un AFND-$\\lambda$ por subconjuntos. ¿Cuál es el estado inicial del AFD?",
+    "options": [
+      "$\\{q_0\\}$",
+      "$F \\cap \\{q_0\\}$",
+      "$\\bigcup_{a\\in\\Sigma} \\delta(q_0,a)$",
+      "$\\mathrm{Cl}_\\lambda(\\{q_0\\})$"
+    ],
+    "correct": 3,
+    "explain": "Antes de leer nada ya podés estar en todo lo alcanzable por flechas $\\lambda$ desde $q_0$. Arrancar con $\\{q_0\\}$ a secas (olvidar la clausura-$\\lambda$) es el bug clásico que da un lenguaje mal.",
+    "source": "02_automatas_finitos.md"
+  },
+  {
+    "id": "02-07",
+    "topic": "02",
+    "level": 3,
+    "q": "En la demostración AFND $\\Rightarrow$ AFD (subconjuntos), $L(M)=L(M')$ sale de un lema central. ¿Cuál y cómo se prueba?",
+    "options": [
+      "$|Q'| \\leq 2^{|Q|}$, por conteo de subconjuntos",
+      "El principio del palomar sobre la traza de estados",
+      "$L(M) \\subseteq L(M')$ por doble inclusión, sin inducción",
+      "$\\delta'(q_0',x)=[S] \\iff \\hat\\delta(q_0,x)=S$, por inducción en $|x|$"
+    ],
+    "correct": 3,
+    "explain": "El lema dice que el estado del AFD tras leer $x$ es exactamente el conjunto de estados posibles del AFND. Se prueba por inducción en la longitud de la cadena (base $x=\\lambda$, paso $xa$ con la def. de $\\delta'$ e HI), y de ahí $L(M)=L(M')$ comparando con $F'$.",
+    "source": "02_automatas_finitos.md"
+  },
+  {
+    "id": "02-08",
+    "topic": "02",
+    "level": 3,
+    "q": "V/F: si a un AFND le invertís los finales, el nuevo autómata reconoce $L^c$.",
+    "options": [
+      "V: la aceptación se niega estado a estado",
+      "F: una cadena con caminos a un final y a un no-final queda aceptada por los DOS autómatas",
+      "V, pero sólo si el AFND no tiene transiciones $\\lambda$",
+      "F: sólo falla cuando el AFND tiene estados inaccesibles"
+    ],
+    "correct": 1,
+    "explain": "En un AFND basta UN camino aceptador. Si $x$ llega a un final y también a un no-final, después de invertir sigue teniendo un camino aceptador: se acepta en ambos, así que no es el complemento. Hay que determinizar (y completar) antes de invertir.",
+    "source": "02_automatas_finitos.md"
+  },
+  {
+    "id": "03-01",
+    "topic": "03",
+    "level": 1,
+    "q": "¿Cuál es el orden correcto de cuantificadores en el enunciado del Lema de Pumping?",
+    "options": [
+      "$\\forall p\\;\\exists z\\;\\forall u,v,w\\;\\exists i$",
+      "$\\exists p\\;\\forall z\\;\\exists u,v,w\\;\\forall i$",
+      "$\\exists p\\;\\exists z\\;\\forall u,v,w\\;\\forall i$",
+      "$\\forall p\\;\\forall z\\;\\exists u,v,w\\;\\exists i$"
+    ],
+    "correct": 1,
+    "explain": "EXISTE la constante $p$; para TODA $z\\in L$ con $|z|\\geq p$ EXISTE una descomposición $z=uvw$ que bombea para TODO $i\\geq 0$. Al negarlo para probar no-regularidad los cuantificadores se dan vuelta: ahí vos elegís $z$ e $i$.",
+    "source": "03_pumping_regular.md"
+  },
+  {
+    "id": "03-02",
+    "topic": "03",
+    "level": 1,
+    "q": "Un lenguaje $L$ cumple la conclusión del lema de pumping. ¿Qué podés afirmar?",
+    "options": [
+      "$L$ es regular",
+      "$L$ es infinito",
+      "$L$ no es regular",
+      "Nada: el lema es condición necesaria, no suficiente"
+    ],
+    "correct": 3,
+    "explain": "Hay lenguajes NO regulares que cumplen pumping, así que \"cumple $\\Rightarrow$ regular\" es falso. El lema sólo sirve por contrarrecíproco: NO cumple pumping $\\Rightarrow$ NO es regular.",
+    "source": "03_pumping_regular.md"
+  },
+  {
+    "id": "03-03",
+    "topic": "03",
+    "level": 1,
+    "q": "En una prueba de no-regularidad por pumping, ¿quién elige qué?",
+    "options": [
+      "Vos elegís $p$ y la descomposición; el rival, $z$ e $i$",
+      "Vos elegís todo: $p$, $z$, la descomposición e $i$",
+      "Vos elegís $z$ e $i$; el rival, $p$ y la descomposición $uvw$",
+      "El rival elige todo y vos sólo verificás"
+    ],
+    "correct": 2,
+    "explain": "$p$ te lo dan arbitrario y la descomposición es CUALQUIERA que respete $|uv|\\leq p$, $|v|\\geq 1$ (te la tenés que bancar toda). Tu poder está en elegir la cadena testigo $z$ y el índice $i$ que rompe.",
+    "source": "03_pumping_regular.md"
+  },
+  {
+    "id": "03-04",
+    "topic": "03",
+    "level": 2,
+    "q": "Con $z=a^pb^p$ y las condiciones $|uv|\\leq p$, $|v|\\geq 1$, ¿qué forma tiene $v$ forzosamente?",
+    "options": [
+      "$v = a^t$ con $t \\geq 1$",
+      "$v$ puede mezclar $a$'s y $b$'s",
+      "$v = b^t$ con $t \\geq 1$",
+      "$v = a^t b^s$ con $t, s \\geq 0$ cualesquiera"
+    ],
+    "correct": 0,
+    "explain": "Los primeros $p$ símbolos de $z$ son todos $a$, y $|uv|\\leq p$ mete a $uv$ entero dentro de ese bloque: $v=a^t$, $t\\geq 1$. Olvidar la cota $|uv|\\leq p$ (y dejar que $v$ toque las $b$) hace caer todo el argumento.",
+    "source": "03_pumping_regular.md"
+  },
+  {
+    "id": "03-05",
+    "topic": "03",
+    "level": 2,
+    "q": "Para $L=\\{w : \\big||w|_a - |w|_b\\big| \\leq 1\\}$ con $z=a^pb^p$ y $v=a^t$, ¿qué $i$ garantiza salir de $L$ para TODO $t \\geq 1$?",
+    "options": [
+      "$i=1$",
+      "$i=2$",
+      "$i=4$",
+      "$i=0$"
+    ],
+    "correct": 2,
+    "explain": "Con $i=2$ la diferencia queda en $t$, y si $t=1$ la cadena sigue dentro de la tolerancia. Con $i=4$ la diferencia es $3t \\geq 3 > 1$: rompe para todo $t$. $i=1$ devuelve $z\\in L$ y nunca sirve; $i=0$ deja diferencia $t$, que con $t=1$ también queda adentro.",
+    "source": "03_pumping_regular.md"
+  },
+  {
+    "id": "03-06",
+    "topic": "03",
+    "level": 2,
+    "q": "Dado un AFD de $n$ estados, $L(M)$ es INFINITO si y sólo si $M$ acepta alguna cadena de longitud $\\ell$ con…",
+    "options": [
+      "$\\ell < n$",
+      "$\\ell \\geq 2n$",
+      "$n \\leq \\ell < 2n$",
+      "$\\ell = n$ exactamente"
+    ],
+    "correct": 2,
+    "explain": "Una cadena aceptada de largo $\\geq n$ garantiza un ciclo bombeable (infinitas cadenas); la cota $< 2n$ hace que el chequeo sea finito. Cuidado: $\\ell < n$ es el rango del test de VACUIDAD, no de infinitud.",
+    "source": "03_pumping_regular.md"
+  },
+  {
+    "id": "03-07",
+    "topic": "03",
+    "level": 3,
+    "q": "¿Por qué el lema de pumping NO caracteriza a los lenguajes regulares?",
+    "options": [
+      "Porque sólo aplica a lenguajes infinitos",
+      "Porque existen lenguajes no regulares que cumplen la conclusión del lema",
+      "Porque la constante $p$ no siempre existe para lenguajes finitos",
+      "Porque la descomposición $uvw$ no es única"
+    ],
+    "correct": 1,
+    "explain": "Ejemplo: $\\{0^m1^n : m>n \\vee m \\text{ par}\\}$ cumple la conclusión del lema pero se prueba no-regular (por clausura / unión disjunta). Por eso la implicación sólo va en un sentido: regular $\\Rightarrow$ cumple pumping.",
+    "source": "03_pumping_regular.md"
+  },
+  {
+    "id": "03-08",
+    "topic": "03",
+    "level": 3,
+    "q": "V/F: la unión de un lenguaje regular con uno no regular es siempre no regular.",
+    "options": [
+      "F: $\\{a^nb^n\\} \\cup (a|b)^* = (a|b)^*$, que es regular",
+      "V, por las propiedades de clausura de los regulares",
+      "V, salvo que los lenguajes sean disjuntos",
+      "F: incluso la unión de dos regulares puede no ser regular"
+    ],
+    "correct": 0,
+    "explain": "El regular puede \"tapar\" al no regular. El argumento de unión sólo vale con DISJUNTOS: si $L = R \\uplus N$ con $R$ regular y $L$ regular, entonces $N = L \\cap R^c$ sería regular, absurdo. Sin disjunción no hay garantía.",
+    "source": "03_pumping_regular.md"
+  },
+  {
+    "id": "04-01",
+    "topic": "04",
+    "level": 1,
+    "q": "¿Qué lenguajes denotan las ER $\\emptyset$ y $\\lambda$?",
+    "options": [
+      "Ambas denotan $\\{\\lambda\\}$",
+      "$\\mathcal{L}(\\emptyset)=\\emptyset$ y $\\mathcal{L}(\\lambda)=\\{\\lambda\\}$",
+      "$\\mathcal{L}(\\emptyset)=\\{\\lambda\\}$ y $\\mathcal{L}(\\lambda)=\\emptyset$",
+      "Ambas denotan el lenguaje vacío"
+    ],
+    "correct": 1,
+    "explain": "$\\emptyset$ no denota ninguna cadena (ni siquiera $\\lambda$); la ER $\\lambda$ denota exactamente $\\{\\lambda\\}$. Es la distinción $\\lambda$ vs $\\Lambda$ vs $\\emptyset$ del tema 01 en versión ER.",
+    "source": "04_expresiones_regulares.md"
+  },
+  {
+    "id": "04-02",
+    "topic": "04",
+    "level": 1,
+    "q": "Con la precedencia usual ($^*$ > concatenación > $\\mid$), la ER $0\\mid01^*$ se lee…",
+    "options": [
+      "$(0\\mid0)1^*$",
+      "$(0\\mid01)^*$",
+      "$0\\mid(01)^*$",
+      "$0\\mid(0(1^*))$"
+    ],
+    "correct": 3,
+    "explain": "La estrella liga sólo al $1$, después la concatenación pega $0$ con $1^*$, y la unión se resuelve al final. Así $011 \\in \\mathcal{L}$ pero $0101 \\notin \\mathcal{L}$ (que sí estaría en $0\\mid(01)^*$).",
+    "source": "04_expresiones_regulares.md"
+  },
+  {
+    "id": "04-03",
+    "topic": "04",
+    "level": 1,
+    "q": "En el método de derivadas de Brzozowski (ER $\\to$ AF), ¿qué estados quedan finales?",
+    "options": [
+      "Los que provienen de subexpresiones con estrella",
+      "Las ER anulables, o sea las $L_i$ con $\\lambda \\in \\mathcal{L}(L_i)$",
+      "Sólo la ER original $R$",
+      "Los estados cuya derivada es $\\emptyset$"
+    ],
+    "correct": 1,
+    "explain": "Final $\\iff \\varepsilon(L_i)=\\lambda$: la ER del estado contiene la cadena vacía. Es puramente mecánico, no hay que \"pensar\" cuáles aceptan.",
+    "source": "04_expresiones_regulares.md"
+  },
+  {
+    "id": "04-04",
+    "topic": "04",
+    "level": 2,
+    "q": "$\\partial_a(a^*ba)$ es igual a…",
+    "options": [
+      "$a^*ba$",
+      "$a^*$",
+      "$a^*ba \\mid ba$",
+      "$ba$"
+    ],
+    "correct": 0,
+    "explain": "Regla del producto: $\\partial_a(a^*ba)=\\partial_a(a^*)\\,ba \\mid \\varepsilon(a^*)\\,\\partial_a(ba) = a^*ba \\mid \\lambda\\cdot\\emptyset = a^*ba$. Los errores típicos: perder el factor $ba$ del primer término (da $a^*$) o sumar $\\partial_a(ba)$ ignorando que vale $\\emptyset$.",
+    "source": "04_expresiones_regulares.md"
+  },
+  {
+    "id": "04-05",
+    "topic": "04",
+    "level": 2,
+    "q": "Resolvé con el Lema de Arden: $X = aX \\mid b$.",
+    "options": [
+      "$X = a^*b$",
+      "$X = ba^*$",
+      "$X = (a \\mid b)^*$",
+      "$X = ab^*$"
+    ],
+    "correct": 0,
+    "explain": "Es la forma $X = AX \\mid B$ con $A=a$, $B=b$ y $\\lambda \\notin \\mathcal{L}(a)$, así que $X = A^*B = a^*b$. $ba^*$ invierte el orden: correspondería a la ecuación $X = Xa \\mid b$.",
+    "source": "04_expresiones_regulares.md"
+  },
+  {
+    "id": "04-06",
+    "topic": "04",
+    "level": 2,
+    "q": "$\\partial_b(a^*b^+)$ es igual a…",
+    "options": [
+      "$b^*$",
+      "$b^+$",
+      "$a^*b^*$",
+      "$\\emptyset$"
+    ],
+    "correct": 0,
+    "explain": "$\\partial_b(a^*)\\,b^+ \\mid \\varepsilon(a^*)\\,\\partial_b(b^+) = \\emptyset \\mid \\lambda\\, b^* = b^*$. El primer término muere porque $\\partial_b(a^*)=\\emptyset$; el segundo aparece porque $a^*$ ES anulable, y $\\partial_b(b^+)=b^*$ (ya consumiste la $b$ obligatoria).",
+    "source": "04_expresiones_regulares.md"
+  },
+  {
+    "id": "04-07",
+    "topic": "04",
+    "level": 3,
+    "q": "¿Por qué el Lema de Arden exige $\\lambda \\notin \\mathcal{L}(A)$ en $X = AX \\mid B$?",
+    "options": [
+      "Para que $A^*B$ sea una ER sintácticamente válida",
+      "Para garantizar que $X$ no contenga $\\lambda$",
+      "Porque si $A$ es anulable la solución deja de ser única",
+      "Porque con $A$ anulable la ecuación no tiene ninguna solución"
+    ],
+    "correct": 2,
+    "explain": "$A^*B$ siempre es solución, el problema es que con $\\lambda \\in \\mathcal{L}(A)$ aparecen infinitas soluciones más (todo $A^*(B \\cup C)$ satisface la ecuación). Sin unicidad, el método de ecuaciones no puede concluir cuál es el lenguaje del autómata.",
+    "source": "04_expresiones_regulares.md"
+  },
+  {
+    "id": "04-08",
+    "topic": "04",
+    "level": 3,
+    "q": "V/F: $a(b\\mid\\lambda)\\mid b^+ = ab^+$. Si es falso, ¿cuál es una cadena testigo?",
+    "options": [
+      "V: distribuyendo la $a$ queda lo mismo",
+      "F: $a$ está en la primera pero no en la segunda",
+      "F: $b$ está en la segunda pero no en la primera",
+      "F: $ab$ está en la primera pero no en la segunda"
+    ],
+    "correct": 1,
+    "explain": "$a(b\\mid\\lambda) = \\{ab, a\\}$: la cadena $a$ pertenece a la izquierda, pero $ab^+$ exige al menos una $b$ después de la $a$. (También $b$ y $abb$ separan, pero al revés de como dicen los distractores.) Moraleja: no simplifiques ER a lo bruto, validá con el lenguaje.",
+    "source": "04_expresiones_regulares.md"
+  },
+  {
+    "id": "05-01",
+    "topic": "05",
+    "level": 1,
+    "q": "Al determinizar por subconjuntos, un estado $S$ del AFD es final si y sólo si…",
+    "options": [
+      "$S \\subseteq F$",
+      "$S \\cap F \\neq \\emptyset$",
+      "$S = F$",
+      "todos los estados de $S$ son co-accesibles a $F$"
+    ],
+    "correct": 1,
+    "explain": "Basta que $S$ TOQUE algún final del AFND: en el no determinismo alcanza con un camino aceptador. Pedir $S \\subseteq F$ es el error típico que rechaza cadenas que el AFND aceptaba.",
+    "source": "05_determinizacion_minimizacion.md"
+  },
+  {
+    "id": "05-02",
+    "topic": "05",
+    "level": 1,
+    "q": "El algoritmo de minimización por refinamiento arranca con la partición $\\equiv_0$ igual a…",
+    "options": [
+      "$\\{Q \\setminus F,\\; F\\}$: no-finales vs finales",
+      "un estado por clase",
+      "$\\{Q\\}$: todos los estados juntos",
+      "accesibles vs inaccesibles"
+    ],
+    "correct": 0,
+    "explain": "$\\equiv_0$ distingue con cadenas de longitud $\\leq 0$, o sea sólo con $\\lambda$: la única distinción posible es ser final o no serlo. Después cada paso refina separando por la clase-destino de cada símbolo.",
+    "source": "05_determinizacion_minimizacion.md"
+  },
+  {
+    "id": "05-03",
+    "topic": "05",
+    "level": 1,
+    "q": "El AFD mínimo de un lenguaje regular es…",
+    "options": [
+      "único salvo isomorfismo",
+      "único sólo si el lenguaje es finito",
+      "uno de posiblemente varios no isomorfos con igual cantidad de estados",
+      "dependiente del AFND del que partiste"
+    ],
+    "correct": 0,
+    "explain": "Teorema de minimalidad: ningún AFD equivalente tiene menos estados que $M_{\\min}$, y dos mínimos son isomorfos. Por eso minimizar ambos y comparar decide si dos AFD reconocen el mismo lenguaje.",
+    "source": "05_determinizacion_minimizacion.md"
+  },
+  {
+    "id": "05-04",
+    "topic": "05",
+    "level": 2,
+    "q": "Al determinizar un AFND-$\\lambda$, la transición del AFD es $\\delta'(S,x) = $ …",
+    "options": [
+      "$\\mathrm{move}(S,x)$",
+      "$\\mathrm{Cl}_\\lambda(\\mathrm{move}(S,x))$",
+      "$\\mathrm{move}(\\mathrm{Cl}_\\lambda(S),x)$ sin volver a cerrar",
+      "$\\mathrm{Cl}_\\lambda(S)$"
+    ],
+    "correct": 1,
+    "explain": "Después de consumir la letra hay que volver a cerrar por $\\lambda$: $\\mathrm{Cl}_\\lambda(\\mathrm{move}(S,x))$. Aplicar la clausura sólo al estado inicial y olvidarla tras cada $\\mathrm{move}$ es el bug clásico.",
+    "source": "05_determinizacion_minimizacion.md"
+  },
+  {
+    "id": "05-05",
+    "topic": "05",
+    "level": 2,
+    "q": "¿Cuándo cortás el refinamiento $\\equiv_0, \\equiv_1, \\dots$ de la minimización?",
+    "options": [
+      "Cuando cada clase tiene un solo estado",
+      "Después de exactamente $|Q|$ pasos",
+      "Cuando la cantidad de clases baja",
+      "Cuando $\\equiv_{k+1} = \\equiv_k$ (punto fijo)"
+    ],
+    "correct": 3,
+    "explain": "Si un paso no cambia la partición, ningún paso posterior la cambia (propiedad 5) y $\\equiv_k$ ya es $\\equiv$. Frenar \"a ojo\" en $\\equiv_1$ sin verificar es estabilidad prematura; y la cantidad de clases NUNCA puede bajar (si baja, hay error de cuentas).",
+    "source": "05_determinizacion_minimizacion.md"
+  },
+  {
+    "id": "05-06",
+    "topic": "05",
+    "level": 2,
+    "q": "Chequeás $L(M_1)=L(M_2)$ con el autómata producto. Un estado $(p,q)$ \"malo\" (testigo de diferencia) es uno donde…",
+    "options": [
+      "ambas coordenadas son finales",
+      "ninguna coordenada es final",
+      "exactamente una de las coordenadas es final",
+      "$p$ y $q$ tienen el mismo nombre"
+    ],
+    "correct": 2,
+    "explain": "Si exactamente uno acepta, cualquier cadena que llegue a $(p,q)$ la acepta un autómata y el otro no: la diferencia simétrica no es vacía. Si ningún estado malo es alcanzable desde $(q_{01},q_{02})$, los autómatas son equivalentes.",
+    "source": "05_determinizacion_minimizacion.md"
+  },
+  {
+    "id": "05-07",
+    "topic": "05",
+    "level": 3,
+    "q": "El paso inductivo de la maquinaria de minimización dice: $p \\equiv_{k+1} r \\iff$ …",
+    "options": [
+      "$\\forall a \\in \\Sigma: \\delta(p,a) \\equiv_k \\delta(r,a)$ (sin pedir nada más)",
+      "$p \\equiv_k r \\;\\wedge\\; \\forall a \\in \\Sigma: \\delta(p,a) \\equiv_k \\delta(r,a)$",
+      "$p \\equiv_k r \\;\\vee\\; \\forall a \\in \\Sigma: \\delta(p,a) \\equiv_{k+1} \\delta(r,a)$",
+      "$\\delta(p,a) = \\delta(r,a)$ para algún $a \\in \\Sigma$"
+    ],
+    "correct": 1,
+    "explain": "Hacen falta las DOS condiciones: que ya fueran indistinguibles con cadenas de largo $\\leq k$, Y que cada símbolo los lleve a estados $\\equiv_k$. Omitir el primer conjunto (el distractor clásico) rompe, por ejemplo, la distinción final/no-final heredada de $\\equiv_0$.",
+    "source": "05_determinizacion_minimizacion.md"
+  },
+  {
+    "id": "05-08",
+    "topic": "05",
+    "level": 3,
+    "q": "¿Por qué el algoritmo de minimización y su teorema de unicidad NO se aplican a AFND?",
+    "options": [
+      "Porque los AFND no admiten estados inaccesibles",
+      "Porque el AFND mínimo no es único salvo isomorfismo: el teorema de minimalidad está probado sobre AFD",
+      "Porque la clausura-$\\lambda$ hace diverger el refinamiento",
+      "Porque un AFND siempre tiene más estados que el AFD equivalente"
+    ],
+    "correct": 1,
+    "explain": "Para un mismo lenguaje puede haber AFND con mínima cantidad de estados NO isomorfos entre sí; la teoría de $\\equiv$, el cociente $Q/\\!\\equiv$ y la unicidad valen sobre AFD. De paso: el AFND suele tener MENOS estados que el AFD (la determinización puede explotar a $2^{|Q|}$).",
+    "source": "05_determinizacion_minimizacion.md"
+  },
+  {
+    "id": "06-01",
+    "topic": "06",
+    "level": 1,
+    "q": "¿Cuáles son las formas permitidas de producción en una gramática regular lineal a derecha?",
+    "options": [
+      "$A\\to aB$, $A\\to a$, $A\\to\\lambda$",
+      "$A\\to aB$, $A\\to Ba$, $A\\to\\lambda$ (mezclables)",
+      "$A\\to aBb$, $A\\to a$",
+      "$A\\to AB$, $A\\to a$"
+    ],
+    "correct": 0,
+    "explain": "Un terminal y a lo sumo UN no terminal, siempre a la derecha del terminal. Mezclar $A\\to aB$ con $A\\to Ba$ en la misma gramática ya no es tipo 3, y dos terminales juntos ($A\\to abB$) tampoco es la forma canónica.",
+    "source": "06_gramaticas_regulares.md"
+  },
+  {
+    "id": "06-02",
+    "topic": "06",
+    "level": 1,
+    "q": "Las gramáticas regulares generan…",
+    "options": [
+      "exactamente los lenguajes regulares",
+      "un subconjunto propio de los lenguajes regulares",
+      "todos los lenguajes libres de contexto",
+      "los regulares, pero sólo las lineales a derecha"
+    ],
+    "correct": 0,
+    "explain": "Es un teorema con dos direcciones: gramática regular $\\Rightarrow$ AFND y AFD $\\Rightarrow$ gramática regular. Además lineal a derecha y lineal a izquierda generan la MISMA clase.",
+    "source": "06_gramaticas_regulares.md"
+  },
+  {
+    "id": "06-03",
+    "topic": "06",
+    "level": 1,
+    "q": "En la jerarquía de Chomsky, las gramáticas regulares son de tipo…",
+    "options": [
+      "0",
+      "1",
+      "2",
+      "3"
+    ],
+    "correct": 3,
+    "explain": "Tipo 3, la clase más restringida de la jerarquía, contenida PROPIAMENTE en las libres de contexto (tipo 2): $a^nb^n$ es tipo 2 pero no tipo 3. Las inclusiones tipo 3 $\\subsetneq$ 2 $\\subsetneq$ 1 $\\subsetneq$ 0 son todas propias.",
+    "source": "06_gramaticas_regulares.md"
+  },
+  {
+    "id": "06-04",
+    "topic": "06",
+    "level": 2,
+    "q": "AFD $\\to$ gramática regular: la transición $\\delta(p,a)=q$ con $q \\in F$ genera…",
+    "options": [
+      "sólo $A_p \\to aA_q$",
+      "sólo $A_p \\to a$",
+      "$A_q \\to aA_p$",
+      "$A_p \\to aA_q$ y además $A_p \\to a$"
+    ],
+    "correct": 3,
+    "explain": "Siempre va $A_p \\to aA_q$ (una producción por transición), y como $q$ es final se agrega $A_p \\to a$: permite terminar la derivación consumiendo la última letra. Olvidar esa segunda producción hace perder cadenas.",
+    "source": "06_gramaticas_regulares.md"
+  },
+  {
+    "id": "06-05",
+    "topic": "06",
+    "level": 2,
+    "q": "Gramática regular (a derecha) $\\to$ AFND: ¿qué efecto tiene la producción $A \\to a$?",
+    "options": [
+      "Marca $q_A$ como estado final",
+      "Agrega $q_f \\in \\delta(q_A, a)$, con $q_f$ el estado final auxiliar nuevo",
+      "Agrega un lazo $q_A \\to q_A$ con $a$",
+      "Agrega $q_A \\in \\delta(q_f, a)$"
+    ],
+    "correct": 1,
+    "explain": "$A \\to a$ significa \"consumo la última letra y termino\": transición al estado final nuevo $q_f$ que junta todos esos cierres. Marcar $q_A$ como final es lo que corresponde a $A \\to \\lambda$, no a $A \\to a$.",
+    "source": "06_gramaticas_regulares.md"
+  },
+  {
+    "id": "06-06",
+    "topic": "06",
+    "level": 2,
+    "q": "AFD $\\to$ gramática regular: ¿cuándo agregás la producción $S \\to \\lambda$?",
+    "options": [
+      "Siempre, para no perder generalidad",
+      "Nunca: $\\lambda$ no se puede generar en tipo 3",
+      "Cuando $q_0 \\in F$",
+      "Cuando $F \\neq \\emptyset$"
+    ],
+    "correct": 2,
+    "explain": "$S \\to \\lambda$ genera exactamente la cadena vacía, y $\\lambda \\in L(M) \\iff q_0 \\in F$. Las producciones $A \\to \\lambda$ están permitidas en las gramáticas regulares de la cátedra.",
+    "source": "06_gramaticas_regulares.md"
+  },
+  {
+    "id": "06-07",
+    "topic": "06",
+    "level": 3,
+    "q": "El corazón de la demo \"gramática regular $\\Rightarrow$ AFND\" es el lema $A \\Rightarrow^* wB \\iff q_B \\in \\hat\\delta(q_A, w)$. ¿Cómo se prueba?",
+    "options": [
+      "Por inducción en la cantidad de producciones de $P$",
+      "Por inducción en $|w|$",
+      "Aplicando el Lema de Arden a las ecuaciones de la gramática",
+      "Por contrarrecíproco sobre los estados finales"
+    ],
+    "correct": 1,
+    "explain": "Derivar $w$ dejando $B$ pendiente equivale a que el autómata llegue a $q_B$ leyendo $w$; se prueba por inducción en la longitud de $w$. Después se cierran los dos casos de aceptación (última producción $A \\to a$, o $B \\to \\lambda$ con $q_B$ final) y el caso aparte de $\\lambda$.",
+    "source": "06_gramaticas_regulares.md"
+  },
+  {
+    "id": "06-08",
+    "topic": "06",
+    "level": 3,
+    "q": "Toda gramática lineal a derecha $G$ tiene una lineal a izquierda equivalente. ¿Qué genera esa gramática a izquierda?",
+    "options": [
+      "El reverso $L(G)^r$",
+      "El mismo lenguaje $L(G)$, armando la cadena desde el otro extremo",
+      "El complemento $L(G)^c$",
+      "$L(G)$, pero sólo si $\\lambda \\notin L(G)$"
+    ],
+    "correct": 1,
+    "explain": "Lineal a derecha y a izquierda son formalismos equivalentes para la MISMA clase y el mismo lenguaje: la construcción sólo cambia desde qué extremo se arma la cadena. Confundir \"lineal a izquierda\" con \"leer al revés\" (o sea, con $L^r$) es la trampa clásica.",
+    "source": "06_gramaticas_regulares.md"
+  }
+]

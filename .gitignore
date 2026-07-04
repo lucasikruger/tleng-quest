@@ -1,0 +1,6 @@
+# la key de Anthropic vive SOLO en localStorage del navegador, nunca en el repo,
+# pero por las dudas ignorá cualquier archivo de secretos
+*.key
+.env
+.env.*
+.DS_Store

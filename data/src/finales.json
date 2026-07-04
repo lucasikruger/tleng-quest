@@ -1,0 +1,318 @@
+[
+ {
+  "id": "2016-07-26-e2",
+  "fecha": "2016-07-26",
+  "toma": "Becher",
+  "formato": "escrito",
+  "dificultad": 2,
+  "temas": [
+   "09",
+   "07"
+  ],
+  "enunciado": "Usando el lema de pumping para lenguajes libres de contexto, dar un algoritmo para decidir si el lenguaje reconocido por un autómata de pila es vacío. (En el final de la semana anterior era lo mismo, pero había que decidir si era infinito.)",
+  "pistas": [
+   "Es un ejercicio de decisión sobre LIC: el pumping te da un umbral $n$ tal que las cadenas «interesantes» están acotadas. Pensá qué pasa si la cadena más corta del lenguaje midiera $\\geq n$.",
+   "Primer paso: pasá el AP a una GLC $G$ equivalente (Teorema AP $\\to$ GLC) y tomá $n = a^{|V_N|+1}$, la constante de pumping de $G$ ($a$ = largo del cuerpo más largo).",
+   "Esqueleto: probá que $L \\neq \\emptyset \\iff L$ contiene alguna cadena de largo $< n$ (si la más corta midiera $\\geq n$, bombeás con $i=0$ y conseguís una más corta, absurdo). Después el algoritmo testea pertenencia (CYK) para toda cadena de largo $< n$."
+  ],
+  "respuesta": "**Algoritmo.** (1) Convertir el AP en una GLC $G=(V_N,V_T,P,S)$ equivalente (Teorema 5.4, AP por pila vacía $\\to$ GLC). (2) Sea $n = a^{|V_N|+1}$ la constante del lema de pumping de $G$, con $a$ el largo del cuerpo más largo. (3) Para cada $z \\in \\Sigma^{<n}$ correr CYK (con $G$ en FNC) y ver si $z \\in L$. Responder «no vacío» sii alguna es aceptada.\n\n**Correctitud.** Afirmo que $L \\neq \\emptyset \\iff \\exists z \\in L$ con $|z| < n$. ($\\Leftarrow$) trivial. ($\\Rightarrow$) Sea $z \\in L$ de longitud mínima. Si fuera $|z| \\geq n$, por pumping $z = rxyz's$ con $|xz'| \\geq 1$ y $rx^iyz'^is \\in L$ para todo $i \\geq 0$; tomando $i=0$ obtengo $ryz's \\in L$ estrictamente más corta, contradiciendo la minimalidad. Luego la cadena más corta de $L$ (si existe) mide $< n$ y el barrido exhaustivo la encuentra.\n\n**Complejidad.** Se testean $O(|\\Sigma|^n)$ cadenas, cada CYK cuesta $O(n^3 \\cdot |G|)$: exponencial en $|G|$ (porque $n$ lo es), pero es un **algoritmo de decisión** correcto. (Nota: sin pumping hay un método polinomial —símbolos activos por punto fijo: $L=\\emptyset \\iff S$ no es activo— pero el enunciado pide usar pumping.)\n\n**Variante «infinito»:** $L$ es infinito $\\iff$ acepta alguna $z$ con $n \\leq |z| < 2n$. ($\\Rightarrow$) una cadena $\\geq 2n$ se bombea hacia abajo de a pasos que quitan $|xz'| \\leq n$ símbolos, así que en algún momento cae en la franja $[n, 2n)$. ($\\Leftarrow$) una cadena $\\geq n$ se bombea hacia arriba y da infinitas cadenas."
+ },
+ {
+  "id": "2016-12-20-e1",
+  "fecha": "2016-12-20",
+  "toma": "Jacobo",
+  "formato": "escrito",
+  "dificultad": 3,
+  "temas": [
+   "05"
+  ],
+  "enunciado": "Demostrar que el AFD mínimo construido según el criterio de indistinguibilidad es efectivamente mínimo: si hubiese otro AFD que aceptase el mismo lenguaje, entonces éste tendría al menos la misma cantidad de estados que el reducido.",
+  "pistas": [
+   "Tema: minimización por indistinguibilidad ($q \\equiv r \\iff \\forall\\alpha: \\hat\\delta(q,\\alpha)\\in F \\Leftrightarrow \\hat\\delta(r,\\alpha)\\in F$). La demo es por absurdo: suponé un $M'$ equivalente con MENOS estados y buscá dos cadenas que lo delaten.",
+   "Primer paso: si $M'$ tiene menos estados que el reducido $M_R$, por palomar existen dos cadenas $\\alpha, \\beta$ que en $M_R$ llegan a estados **distintos** pero en $M'$ caen en el **mismo** estado.",
+   "Esqueleto: estados distintos de $M_R$ son clases distintas $\\Rightarrow$ distinguibles $\\Rightarrow$ existe $\\gamma$ con $\\alpha\\gamma \\in L$ y $\\beta\\gamma \\notin L$ (o viceversa). Pero en $M'$, $\\alpha$ y $\\beta$ colapsan, así que $\\alpha\\gamma$ y $\\beta\\gamma$ terminan en el mismo estado: o ambas en $L$ o ninguna. Absurdo."
+  ],
+  "respuesta": "Sea $M_R$ el autómata cociente: estados = clases de $\\equiv$ (indistinguibilidad), $\\delta_R([q],a) = [\\delta(q,a)]$ (bien definida porque $q \\equiv r \\Rightarrow \\delta(q,a) \\equiv \\delta(r,a)$), y vale $\\hat\\delta_R([q],\\alpha) = [\\hat\\delta(q,\\alpha)]$ por inducción en $|\\alpha|$. Asumimos $M$ (y por lo tanto $M_R$) sin estados inaccesibles.\n\n**Minimalidad (por absurdo).** Supongamos que existe $M'$ con $L(M') = L(M_R) = L$ y $|Q'| < |Q_R|$. Como todo estado de $M_R$ es accesible, para cada estado hay una cadena que llega a él; eso da $|Q_R|$ cadenas que en $M_R$ terminan en estados distintos dos a dos. Como $|Q'| < |Q_R|$, por palomar hay dos de ellas, $\\alpha$ y $\\beta$, que en $M'$ llegan al **mismo** estado $p'$.\n\nEn $M_R$, $\\alpha$ y $\\beta$ llegan a clases distintas $[q_1] \\neq [q_2]$; por definición de $\\equiv$, $q_1$ y $q_2$ son **distinguibles**: existe $\\gamma$ tal que exactamente una de $\\hat\\delta(q_1,\\gamma), \\hat\\delta(q_2,\\gamma)$ está en $F$. Entonces exactamente una de $\\alpha\\gamma, \\beta\\gamma$ pertenece a $L$.\n\nPero en $M'$, $\\hat\\delta'(q_0', \\alpha\\gamma) = \\hat\\delta'(p', \\gamma) = \\hat\\delta'(q_0', \\beta\\gamma)$: ambas cadenas terminan en el mismo estado, así que están **ambas** en $L(M')$ o **ninguna**. Contradicción con $L(M') = L$. $\\blacksquare$\n\n**Corolario.** Todo AFD equivalente tiene $\\geq |Q_R|$ estados; además el mínimo es único salvo isomorfismo (el mismo argumento arma una biyección que preserva transiciones)."
+ },
+ {
+  "id": "2016-12-20-e3",
+  "fecha": "2016-12-20",
+  "toma": "Jacobo",
+  "formato": "escrito",
+  "dificultad": 3,
+  "temas": [
+   "09"
+  ],
+  "enunciado": "Demostrar que el lenguaje $L = \\{ww : w \\in \\{a,b\\}^*\\}$ no es libre de contexto. Sugerencia: considerar una cadena de la forma $a\\ldots ab\\ldots ba\\ldots ab\\ldots b$ perteneciente al lenguaje.",
+  "pistas": [
+   "Herramienta: lema de pumping para LIC, por contrarrecíproco. La cadena testigo tiene que estar «rígida»: elegila en función de la constante $n$ para que cualquier ventana de bombeo de largo $\\leq n$ rompa la estructura $ww$.",
+   "Primer paso: suponé $L$ LIC con constante $n$ y tomá $z = a^n b^n a^n b^n \\in L$ (acá $w = a^n b^n$). Escribí $z = r\\,x\\,y\\,z'\\,s$ con $|xyz'| \\leq n$, $|xz'| \\geq 1$. La clave: la ventana $xyz'$ toca a lo sumo **dos bloques consecutivos**.",
+   "Esqueleto: bombeá con $i=0$ ($z_0 = rys$) y analizá por casos según qué bloques toca la ventana. En cada caso, $z_0$ deja los bloques desbalanceados: si $z_0 = uu$ entonces las dos mitades deberían tener la misma secuencia de bloques $a^*b^*a^*b^*$ con exponentes iguales, y siempre queda algún par de exponentes distinto."
+  ],
+  "respuesta": "Supongamos que $L$ es LIC y sea $n$ su constante de pumping. Tomo $z = a^n b^n a^n b^n \\in L$ ($w = a^n b^n$), con $|z| = 4n \\geq n$. Por el lema, $z = r\\,x\\,y\\,z'\\,s$ con $|xyz'| \\leq n$, $|xz'| \\geq 1$ y $r x^i y z'^i s \\in L$ para todo $i \\geq 0$. Bombeo con $i = 0$: $z_0 = rys \\in L$, es decir $z_0 = uu$ para algún $u$. Como $|xyz'| \\leq n$, la ventana borrada cae dentro de a lo sumo **dos bloques consecutivos** de $z = a^n b^n a^n b^n$.\n\n**Caso 1: la ventana toca sólo la primera mitad** (bloques 1–2, posiciones $\\leq 2n$). Entonces $z_0 = a^{n-j} b^{n-k} a^n b^n$ con $1 \\leq j+k \\leq n$ (borro $j$ aes y $k$ bes). $|z_0| = 4n - (j+k)$; la mitad derecha de $z_0$ (últimos $2n - \\lceil (j+k)/2 \\rceil$ símbolos) termina en $b^n$ y empieza dentro del bloque $a^n$ intacto... más directo: $z_0$ termina en $a^n b^n$ intacto. Si $z_0 = uu$, entonces $u$ termina en $b$; pero la primera mitad de $z_0$ contiene el corte dentro de $a^{n-j}b^{n-k}a^{\\leq n}$ y forzando $u = a^{n-j}b^{n-k}\\ldots$ los exponentes no coinciden con los de la segunda mitad ($n$ y $n$), pues $j + k \\geq 1$. Contradicción.\n\n**Caso 2: la ventana toca los bloques 2–3 (el centro).** $z_0 = a^n b^{n-j} a^{n-k} b^n$ con $j+k \\geq 1$. Si $z_0 = uu$, como $z_0$ empieza con $a^n b$ y termina con $a b^n$, debe ser $u = a^n b^{m_1} = a^{m_2} b^n$ para descomposiciones compatibles, lo que fuerza $n-j = n$ y $n-k = n$, es decir $j = k = 0$. Contradicción.\n\n**Caso 3: la ventana toca sólo la segunda mitad** (bloques 3–4). Simétrico al caso 1: $z_0 = a^n b^n a^{n-j} b^{n-k}$ y la primera mitad intacta $a^n b^n$ no puede igualar a la segunda desbalanceada.\n\nEn todos los casos $z_0 \\notin L$, contradiciendo el lema. Luego $L$ no es LIC. $\\blacksquare$\n\n**Observación útil (versión alternativa):** también se puede intersecar $L$ con el regular $a^+b^+a^+b^+$: da $\\{a^k b^l a^k b^l : k,l \\geq 1\\}$, y como LIC es cerrado por intersección con regular, basta ver que ese lenguaje no es LIC (mismo pumping, casos más limpios)."
+ },
+ {
+  "id": "2017-05-19-e2",
+  "fecha": "2017-05-19",
+  "toma": "Jacobo",
+  "formato": "oral",
+  "dificultad": 2,
+  "temas": [
+   "07"
+  ],
+  "enunciado": "Demostrar que dado $M$ autómata de pila que acepta por estado final, existe $M'$ autómata de pila que acepta por pila vacía con $L_F(M) = L_\\lambda(M')$.",
+  "pistas": [
+   "Tema: equivalencia AP por estado final $\\leftrightarrow$ AP por pila vacía (Teorema 5.1). La construcción agrega estados y un símbolo de pila nuevo; pensá qué podría salir mal si simplemente vaciás la pila al llegar a un final.",
+   "Primer paso: agregá un símbolo de fondo nuevo $X_0$ y un estado inicial nuevo $q_0'$ que apila $Z_0$ sobre $X_0$ y pasa al $q_0$ original. $X_0$ evita aceptar de más: sin él, si $M$ vacía la pila «por accidente» sin estar en un final, $M'$ aceptaría igual.",
+   "Esqueleto: (1) construcción completa ($q_0'$, $X_0$, un estado «aspiradora» $q_e$ con $\\lambda$-transiciones desde cada final que desapila todo); (2) lema con configuraciones instantáneas: $(q_0, x, Z_0) \\vdash_M^* (q, \\lambda, \\gamma)$ con $q \\in F \\iff (q_0', x, X_0) \\vdash_{M'}^* (q, \\lambda, \\gamma X_0) \\vdash^* (q_e, \\lambda, \\lambda)$; (3) doble inclusión de lenguajes."
+  ],
+  "respuesta": "**Construcción.** Sea $M = (Q, \\Sigma, \\Gamma, \\delta, q_0, Z_0, F)$. Defino $M' = (Q \\cup \\{q_0', q_e\\},\\ \\Sigma,\\ \\Gamma \\cup \\{X_0\\},\\ \\delta',\\ q_0',\\ X_0,\\ \\emptyset)$ con:\n\n(i) $\\delta'(q_0', \\lambda, X_0) = \\{(q_0, Z_0 X_0)\\}$ — arranca como $M$ pero con un fondo extra $X_0$;\n(ii) $\\delta'(q, a, Z) \\supseteq \\delta(q, a, Z)$ para todo $q \\in Q$, $a \\in \\Sigma \\cup \\{\\lambda\\}$, $Z \\in \\Gamma$ — simula a $M$;\n(iii) $\\delta'(q, \\lambda, Z) \\ni (q_e, \\lambda)$ para todo $q \\in F$, $Z \\in \\Gamma \\cup \\{X_0\\}$ — al llegar a un final puede pasar a vaciar;\n(iv) $\\delta'(q_e, \\lambda, Z) = \\{(q_e, \\lambda)\\}$ para todo $Z$ — $q_e$ desapila todo sin leer entrada.\n\n**Rol de $X_0$:** si $M$ vaciara su pila en medio del cómputo sin estar en un estado final, sin $X_0$ la pila de $M'$ quedaría vacía y $M'$ aceptaría una cadena que $M$ no acepta (\"aceptar de más\"). Con $X_0$ debajo, la pila de $M'$ nunca se vacía salvo pasando por (iii)–(iv), es decir, habiendo visitado un final de $M$.\n\n**Lema (simulación).** $(q_0, x, Z_0) \\vdash_M^* (q, \\lambda, \\gamma)$ $\\iff$ $(q_0, x, Z_0 X_0) \\vdash_{M'}^* (q, \\lambda, \\gamma X_0)$, por inducción en la cantidad de pasos (las reglas (ii) son las mismas y $X_0$ nunca es tope durante la simulación).\n\n**$L_F(M) \\subseteq L_\\lambda(M')$:** si $x \\in L_F(M)$, hay cómputo $(q_0, x, Z_0) \\vdash^* (q, \\lambda, \\gamma)$ con $q \\in F$. En $M'$: $(q_0', x, X_0) \\vdash (q_0, x, Z_0X_0) \\vdash^* (q, \\lambda, \\gamma X_0) \\vdash (q_e, \\lambda, \\cdot) \\vdash^* (q_e, \\lambda, \\lambda)$: acepta por pila vacía.\n\n**$L_\\lambda(M') \\subseteq L_F(M)$:** todo cómputo de $M'$ que vacía la pila debe quitar $X_0$, y la única forma es vía (iii)/(iv), que exigen haber alcanzado un $q \\in F$ con toda la entrada ya consumida (las transiciones (iii)–(iv) son $\\lambda$). Recortando el sufijo del cómputo y usando el lema ($\\Leftarrow$), $M$ acepta $x$ por estado final. $\\blacksquare$\n\n**Nota:** la construcción NO preserva determinismo (las $\\lambda$-transiciones de (iii) compiten con las de $M$); de hecho los APD por pila vacía sólo reconocen lenguajes libres de prefijos."
+ },
+ {
+  "id": "2017-05-19-e7",
+  "fecha": "2017-05-19",
+  "toma": "Jacobo",
+  "formato": "oral",
+  "dificultad": 1,
+  "temas": [
+   "08",
+   "09"
+  ],
+  "enunciado": "Dar las propiedades de los lenguajes libres de contexto respecto de la unión, la concatenación y la clausura de Kleene (con su justificación). Mostrar un contraejemplo para la intersección. ¿Qué pasa con el complemento?",
+  "pistas": [
+   "Tema: clausura de LIC. Para las positivas, la herramienta es construir gramáticas nuevas combinando $G_1$ y $G_2$ (con no terminales disjuntos). Para la intersección, buscá dos LIC clásicos cuya intersección conozcas como NO-LIC.",
+   "Primer paso: para la unión, $S \\to S_1 \\mid S_2$. Para intersección, pensá en $L_1 = \\{a^n b^n c^m\\}$ y $L_2 = \\{a^m b^n c^n\\}$: ¿qué cadenas tienen en común?",
+   "Esqueleto: unión/concatenación/estrella con producciones nuevas sobre gramáticas disjuntas + argumento de que toda derivación se factoriza. Intersección: $L_1 \\cap L_2 = \\{a^n b^n c^n\\}$, no LIC por pumping. Complemento: por De Morgan, si LIC fuera cerrado por complemento, sería cerrado por intersección. Absurdo."
+  ],
+  "respuesta": "Sean $G_1 = (V_1, V_T, P_1, S_1)$ y $G_2 = (V_2, V_T, P_2, S_2)$ GLC con $V_1 \\cap V_2 = \\emptyset$ (siempre se puede renombrar).\n\n**Unión (cerrada).** $G_\\cup$: no terminales $V_1 \\cup V_2 \\cup \\{S\\}$, producciones $P_1 \\cup P_2 \\cup \\{S \\to S_1,\\ S \\to S_2\\}$. Toda derivación desde $S$ elige una rama y queda confinada a los no terminales de esa gramática (son disjuntos), luego $L(G_\\cup) = L_1 \\cup L_2$.\n\n**Concatenación (cerrada).** $G_\\cdot$: $S \\to S_1 S_2$. Toda cadena generada se factoriza como $w_1 w_2$ con $S_i \\Rightarrow^* w_i$, y recíprocamente. $L(G_\\cdot) = L_1 L_2$.\n\n**Clausura de Kleene (cerrada).** $G_*$: $S \\to S_1 S \\mid \\lambda$. Por inducción en la cantidad de usos de $S \\to S_1 S$, se genera exactamente $L_1^*$.\n\n**Intersección (NO cerrada).** $L_1 = \\{a^n b^n c^m : n,m \\geq 0\\}$ y $L_2 = \\{a^m b^n c^n : n,m \\geq 0\\}$ son LIC (p.ej. $S \\to XC$, $X \\to aXb \\mid \\lambda$, $C \\to cC \\mid \\lambda$; y el simétrico). Pero $L_1 \\cap L_2 = \\{a^n b^n c^n : n \\geq 0\\}$, que **no es LIC**: con la constante $n$ de pumping y $z = a^n b^n c^n$, la ventana $|xyz'| \\leq n$ toca a lo sumo dos tipos de letra; bombear rompe el balance con la tercera. Contradicción.\n\n**Complemento (NO cerrado), corolario por De Morgan.** Si LIC fuera cerrado por complemento, como sí es cerrado por unión tendríamos $L_1 \\cap L_2 = \\overline{\\overline{L_1} \\cup \\overline{L_2}}$ LIC para todos $L_1, L_2$ LIC, contradiciendo el punto anterior. $\\blacksquare$"
+ },
+ {
+  "id": "2017-11-13-e1",
+  "fecha": "2017-11-13",
+  "toma": "?",
+  "formato": "escrito",
+  "dificultad": 2,
+  "temas": [
+   "06"
+  ],
+  "enunciado": "Dado $M$ autómata finito determinístico, dar $G$ gramática regular tal que $L(M) = L(G)$. El lema auxiliar hay que enunciarlo y demostrarlo.",
+  "pistas": [
+   "Tema: equivalencia AF $\\leftrightarrow$ GR (Teorema 9.1). La dirección AFD $\\to$ GR: cada estado se vuelve un no terminal y cada transición una producción. El lema auxiliar conecta caminos en $M$ con derivaciones en $G$.",
+   "Primer paso: definí $G$ con $V_N = \\{A_q : q \\in Q\\}$, $S = A_{q_0}$, y producciones $A_p \\to a A_q$ si $\\delta(p,a) = q$; $A_p \\to a$ si $\\delta(p,a) \\in F$; más $S \\to \\lambda$ si $q_0 \\in F$.",
+   "Esqueleto: Lema: $\\hat\\delta(p, w) = q \\iff A_p \\Rightarrow^* w A_q$, por inducción en $|w|$ (base $w = \\lambda$; paso $w = xa$ usando HI y la producción $A_{q'} \\to a A_q$). Después: $w \\in L(M) \\iff \\hat\\delta(q_0,w) \\in F$, y el último paso de la derivación usa $A_{q'} \\to a$ (o $S \\to \\lambda$ si $w = \\lambda$)."
+  ],
+  "respuesta": "**Construcción.** Dado $M = (Q, \\Sigma, \\delta, q_0, F)$, defino $G = (V_N, \\Sigma, P, S)$ regular a derecha con $V_N = \\{A_q : q \\in Q\\}$, $S = A_{q_0}$ y producciones:\n\n(i) $A_p \\to a A_q$ para cada $\\delta(p, a) = q$;\n(ii) $A_p \\to a$ para cada $\\delta(p, a) \\in F$;\n(iii) $S \\to \\lambda$ si $q_0 \\in F$.\n\n**Lema auxiliar.** Para todo $p, q \\in Q$ y $w \\in \\Sigma^*$: $\\hat\\delta(p, w) = q \\iff A_p \\Rightarrow^* w A_q$.\n\n*Demostración por inducción en $|w|$.* Base $w = \\lambda$: $\\hat\\delta(p,\\lambda) = p$ y $A_p \\Rightarrow^* A_p$ en 0 pasos; recíprocamente una derivación que produce $\\lambda A_q$ con producciones (i) consume un terminal por paso, así que debe ser de 0 pasos y $q = p$. Paso $w = xa$: ($\\Rightarrow$) si $\\hat\\delta(p, xa) = q$, sea $q' = \\hat\\delta(p, x)$; por HI $A_p \\Rightarrow^* x A_{q'}$, y como $\\delta(q', a) = q$ está la producción $A_{q'} \\to a A_q$, luego $A_p \\Rightarrow^* x A_{q'} \\Rightarrow x a A_q$. ($\\Leftarrow$) una derivación $A_p \\Rightarrow^* xaA_q$ tiene un anteúltimo paso $A_p \\Rightarrow^* x A_{q'} \\Rightarrow xa A_q$; por HI $\\hat\\delta(p,x) = q'$ y la producción (i) usada implica $\\delta(q',a) = q$, luego $\\hat\\delta(p, xa) = q$. $\\square$\n\n**Teorema: $L(M) = L(G)$.** Caso $w = \\lambda$: $\\lambda \\in L(M) \\iff q_0 \\in F \\iff S \\to \\lambda \\in P \\iff \\lambda \\in L(G)$. Caso $w = xa$ (no vacía): $w \\in L(M) \\iff \\hat\\delta(q_0, x) = q'$ y $\\delta(q', a) = q_f \\in F$ $\\iff$ (lema + producción (ii)) $S \\Rightarrow^* x A_{q'} \\Rightarrow xa = w$ $\\iff w \\in L(G)$. Toda derivación de una cadena de terminales debe terminar con una producción de tipo (ii) (las de tipo (i) siempre dejan un no terminal), así que no hay otras derivaciones que considerar. $\\blacksquare$"
+ },
+ {
+  "id": "2018-12-27-e4",
+  "fecha": "2018-12-27",
+  "toma": "?",
+  "formato": "escrito",
+  "dificultad": 2,
+  "temas": [
+   "12"
+  ],
+  "enunciado": "Dar el algoritmo de parsing LL(1). Dar un ejemplo pequeño (con su árbol de derivación) y demostrar la complejidad.",
+  "pistas": [
+   "Tema: parsing descendente predictivo. Ingredientes: tabla $M[A, a]$ construida con PRIMEROS y SIGUIENTES, una pila y un puntero a la entrada. Para la complejidad, la pregunta clave es: ¿cuántas expansiones puede haber entre dos consumos de terminal?",
+   "Primer paso: definí la tabla: $A \\to \\alpha$ va en $M[A, a]$ para cada $a \\in \\text{PRIMEROS}(\\alpha)$, y si $\\lambda \\in \\text{PRIMEROS}(\\alpha)$, también en $M[A, b]$ para cada $b \\in \\text{SIGUIENTES}(A)$. G es LL(1) sii ninguna celda tiene dos producciones.",
+   "Esqueleto: algoritmo con pila (inicial $S\\$$): tope terminal $\\Rightarrow$ matchear y avanzar; tope no terminal $A$ $\\Rightarrow$ reemplazar por $M[A, \\text{lookahead}]$; error si celda vacía. Complejidad: como G es LL(1) no es recursiva a izquierda, entre dos consumos hay $< c$ expansiones con $c$ constante de la gramática $\\Rightarrow O(|w|)$."
+  ],
+  "respuesta": "**Tabla predictiva.** Para cada producción $A \\to \\alpha$: poner $A \\to \\alpha$ en $M[A, a]$ para todo $a \\in \\text{PRIMEROS}(\\alpha)$; si $\\lambda \\in \\text{PRIMEROS}(\\alpha)$, ponerla además en $M[A, b]$ para todo $b \\in \\text{SIGUIENTES}(A)$ (incluido $\\$$). $G$ es LL(1) $\\iff$ ninguna celda queda con dos producciones.\n\n**Algoritmo.** Pila inicial: $S\\$$; entrada $w\\$$, lookahead $a$ = símbolo corriente. Repetir: (1) si tope $= a = \\$$: **aceptar**; (2) si el tope es terminal: debe ser $= a$, se desapila y se avanza la entrada (sino **error**); (3) si el tope es no terminal $A$: si $M[A,a] = A \\to X_1\\ldots X_k$, desapilar $A$ y apilar $X_1 \\ldots X_k$ (con $X_1$ en el tope), emitiendo la producción (esto construye el árbol en preorden); si la celda está vacía, **error**.\n\n**Ejemplo.** $G$: $S \\to aSb \\mid \\lambda$, $L = \\{a^n b^n\\}$. $\\text{PRIMEROS}(aSb) = \\{a\\}$, $\\text{SIGUIENTES}(S) = \\{b, \\$\\}$, entonces $M[S,a] = S \\to aSb$, $M[S,b] = M[S,\\$] = S \\to \\lambda$. Parseo de $w = aabb$: $S\\$ \\xrightarrow{a} aSb\\$$ (match $a$) $\\to Sb\\$ \\xrightarrow{a} aSbb\\$$ (match $a$) $\\to Sbb\\$ \\xrightarrow{b} bb\\$$ ($S\\to\\lambda$; match $b$, match $b$, aceptar). Árbol: $S(a, S(a, S(\\lambda), b), b)$ — cada expansión es un nodo interno, las hojas leídas de izquierda a derecha deletrean $aabb$.\n\n**Complejidad $O(|w|)$.** Cada iteración o consume un terminal (a lo sumo $|w|$ veces) o expande un no terminal. Como $G$ es LL(1), no es recursiva a izquierda; entonces en una derivación a izquierda no puede repetirse la cabeza sin consumir entrada: entre dos consumos consecutivos hay menos de $c$ expansiones, con $c$ constante que sólo depende de $G$ (esencialmente $|V_N|$ por el argumento de no repetición, ajustada por las producciones $\\lambda$). Total: $O(c \\cdot |w|) = O(|w|)$ pasos, cada uno $O(1)$ con la tabla precomputada. $\\blacksquare$"
+ },
+ {
+  "id": "2019-11-13-e2",
+  "fecha": "2019-11-13",
+  "toma": "Becher",
+  "formato": "escrito",
+  "dificultad": 1,
+  "temas": [
+   "02",
+   "05"
+  ],
+  "enunciado": "Sea $L$ un lenguaje regular (dado por un autómata finito o una expresión regular). Dar un algoritmo para decidir si $L = \\Sigma^*$. (Pistas del enunciado original: pensar en el lema de pumping; usar el autómata que reconoce el mismo lenguaje.)",
+  "pistas": [
+   "Tema: algoritmos de decisión sobre regulares. $L = \\Sigma^*$ es «universalidad»; conviene reducirla a un problema que ya sabés decidir sobre el AFD. ¿Qué operación convierte «acepta todo» en «no acepta nada»?",
+   "Primer paso: llevá $L$ a un AFD **completo** $M$ (si viene ER: Thompson + determinización; si AFND: determinización; completar con estado trampa).",
+   "Esqueleto: $L = \\Sigma^* \\iff \\overline{L} = \\emptyset$. Complementá invirtiendo finales y decidí vacuidad con BFS/DFS desde $q_0$: ¿se alcanza algún estado final del complemento? Alternativa: minimizá y chequeá que el mínimo sea un único estado final con loops por todo símbolo."
+  ],
+  "respuesta": "**Algoritmo (complemento + vacuidad).** (1) Obtener un AFD completo $M = (Q, \\Sigma, \\delta, q_0, F)$ para $L$: si viene una ER, construir el AFND-$\\lambda$ (Thompson, tamaño lineal) y determinizar (subconjuntos, peor caso $2^n$ estados); completar con estado trampa si hace falta. (2) Complementar: $\\overline M = (Q, \\Sigma, \\delta, q_0, Q \\setminus F)$, que reconoce $\\overline L$ (requiere que $M$ sea determinístico y completo). (3) Decidir $\\overline L = \\emptyset$: BFS/DFS sobre el grafo de $M$ desde $q_0$; $\\overline L = \\emptyset \\iff$ ningún estado de $Q \\setminus F$ es alcanzable. Responder $L = \\Sigma^* \\iff \\overline{L} = \\emptyset$.\n\n**Correctitud.** $L = \\Sigma^* \\iff \\overline L = \\emptyset$ (conjuntos). $\\overline M$ reconoce $\\overline L$ porque en un AFD completo cada cadena tiene exactamente un cómputo, que termina en $F$ o en $Q \\setminus F$. Y $\\overline L \\neq \\emptyset \\iff$ existe un camino de $q_0$ a un final de $\\overline M$ (todo camino deletrea una cadena y viceversa).\n\n**Complejidad.** Sobre el AFD: $O(|Q| + |Q||\\Sigma|)$ (lineal en el autómata). Si la entrada era una ER o un AFND, domina la determinización: $O(2^n)$ en el peor caso, y ese costo exponencial es esencialmente inevitable (universalidad de AFND es PSPACE-completa).\n\n**Algoritmo alternativo (minimización).** Minimizar $M$ (indistinguibilidad, $O(|Q|^2|\\Sigma|)$, o Hopcroft $O(|Q|\\log|Q| \\cdot |\\Sigma|)$). $L = \\Sigma^* \\iff$ el mínimo tiene **un solo estado, final, con un loop por cada símbolo** — porque el AFD mínimo de $\\Sigma^*$ es exactamente ése y el mínimo es único salvo isomorfismo.\n\n**Conexión con pumping (la pista original):** también sirve el criterio finito: $L = \\Sigma^* \\iff$ $M$ acepta **todas** las cadenas de largo $< |Q|$... cuidado: eso NO alcanza en general; la versión correcta del test por cadenas cortas es sobre $\\overline L$: $\\overline L \\neq \\emptyset \\iff \\overline M$ acepta alguna cadena de largo $< |Q|$ (si acepta algo, el camino simple más corto a un final tiene largo $< |Q|$). Entonces basta chequear que $M$ acepte toda cadena de largo $< |Q|$."
+ },
+ {
+  "id": "2019-11-13-e3",
+  "fecha": "2019-11-13",
+  "toma": "Becher",
+  "formato": "escrito",
+  "dificultad": 3,
+  "temas": [
+   "12"
+  ],
+  "enunciado": "Dar ejemplos de: (a) una gramática LL($k$) que no sea LL($k-1$); (b) una gramática LR que no sea LL($k$) para ningún $k$; (c) una gramática que no sea LR($k$) para ningún $k$.",
+  "pistas": [
+   "Tema: jerarquía de gramáticas de parsing. Para (a): ¿qué obliga a mirar exactamente $k$ símbolos? Dos producciones que comparten un prefijo de largo $k-1$. Para (b): pensá qué propiedad estructural mata a LL para todo $k$. Para (c): ¿qué propiedad mata a LR para todo $k$?",
+   "Primer paso: (a) $S \\to a^{k-1}b \\mid a^{k-1}c$: con $k-1$ símbolos de lookahead ves sólo $a^{k-1}$ y no sabés qué producción elegir. (b) La recursión a izquierda es fatal para LL($k$), para cualquier $k$. (c) La ambigüedad es fatal para LR($k$), para cualquier $k$.",
+   "Esqueleto: (a) justificá con la definición: los primeros $k-1$ símbolos derivables coinciden pero los $k$ primeros difieren. (b) $S \\to Sa \\mid a$: es LR(0)/LR(1) (determinística bottom-up), pero $S \\Rightarrow^* Sa^n$ hace que ningún lookahead finito decida la primera producción. (c) $S \\to SS \\mid a$: ambigua, y ninguna gramática ambigua es LR($k$)."
+  ],
+  "respuesta": "**(a) LL($k$) pero no LL($k-1$):** $G_a: S \\to a^{k-1}b \\mid a^{k-1}c$ (lenguaje finito $\\{a^{k-1}b, a^{k-1}c\\}$). Con lookahead $k$ el parser ve $a^{k-1}b$ o $a^{k-1}c$ completos y elige sin conflicto: es LL($k$). Con lookahead $k-1$ ambas alternativas «arrancan» con los mismos $k-1$ símbolos ($a^{k-1}$), así que en la configuración inicial las dos producciones son candidatas para el mismo lookahead: viola la definición de LL($k-1$). (Como el conflicto es de la gramática, no del lenguaje: el lenguaje en sí es finito y hasta regular; la propiedad LL($k$) es de gramáticas.)\n\n**(b) LR pero no LL($k$) para ningún $k$:** $G_b: S \\to Sa \\mid a$ ($L = a^+$). Es LR(1) (incluso LR(0) con final de entrada): el parser bottom-up reduce el primer $a$ a $S$ y luego shiftea/reduce $Sa \\to S$ determinísticamente; no hay conflictos en el autómata de prefijos viables. No es LL($k$) para ningún $k$: es **recursiva a izquierda**, entonces $S \\Rightarrow S a \\Rightarrow S a a \\Rightarrow \\ldots$; para decidir cuántas veces aplicar $S \\to Sa$ el parser descendente debería conocer el largo total de la entrada, pero su lookahead es una ventana fija de $k$ símbolos, todos $a$: para entradas $a^m$ con $m > k$ las dos producciones son compatibles con el mismo lookahead $a^k$. En general: ninguna gramática recursiva a izquierda es LL($k$).\n\n**(c) No LR($k$) para ningún $k$:** $G_c: S \\to SS \\mid a$ ($L = a^+$). Es **ambigua**: $a^3$ tiene dos árboles ($S(S(S,S),S)$ y $S(S,S(S,S))$ vía las dos asociaciones de $SS$). Teorema: toda gramática LR($k$) es no ambigua (el parsing LR construye una única derivación a derecha reversa para cada cadena, determinísticamente). Luego $G_c$ no es LR($k$) para ningún $k$. (Ejemplo a nivel *lenguaje*, si lo piden: $L = \\{a^n b^n\\} \\cup \\{a^n b^{2n}\\}$ es LIC pero no determinístico, y los lenguajes LR($k$) son exactamente los LIC determinísticos, así que ninguna gramática de $L$ es LR($k$).)"
+ },
+ {
+  "id": "2019-12-13-e2",
+  "fecha": "2019-12-13",
+  "toma": "Jacobo",
+  "formato": "oral",
+  "dificultad": 3,
+  "temas": [
+   "09"
+  ],
+  "enunciado": "Enunciar y demostrar el lema de pumping para lenguajes libres de contexto. Importante: justificar bien las cotas sobre las longitudes de las subcadenas ($|xz'| \\geq 1$ y $|xyz'| \\leq n$).",
+  "pistas": [
+   "Herramientas: la cota del árbol de derivación (altura $h$ $\\Rightarrow$ frontera $\\leq a^h$, con $a$ el cuerpo más largo) y el principio del palomar sobre la rama más larga. Elegí un árbol de derivación **mínimo** — esa minimalidad es la que te va a dar $|xz'| \\geq 1$.",
+   "Primer paso: tomá $n = a^{|V_N|+1}$. Si $|z| \\geq n$, todo árbol de $z$ tiene altura $\\geq |V_N| + 1$, así que en la rama más larga hay $|V_N|+1$ no terminales: por palomar se repite uno, $A$. Mirá las dos apariciones más CERCANAS a las hojas.",
+   "Esqueleto: la aparición baja de $A$ genera $y$, la alta genera $xyz'$: entonces $S \\Rightarrow^* rAs$, $A \\Rightarrow^* xAz'$, $A \\Rightarrow^* y$, y de ahí $rx^iyz'^is \\in L$ por inducción en $i$. $|xz'| \\geq 1$: si fuera $0$, reemplazás el subárbol grande por el chico y conseguís un árbol menor para la misma $z$ (contradice minimalidad). $|xyz'| \\leq n$: el subárbol de la aparición alta tiene altura $\\leq |V_N|+1$."
+  ],
+  "respuesta": "**Lema previo (cota del árbol).** Si todo cuerpo de producción de $G$ tiene largo $\\leq a$ y $T$ es un árbol de derivación de altura $h$ con frontera $\\alpha$, entonces $|\\alpha| \\leq a^h$. Por inducción en $h$: base $h=0$ trivial; paso: la raíz tiene $\\leq a$ hijos, cada subárbol tiene altura $\\leq h-1$ y frontera $\\leq a^{h-1}$ por HI.\n\n**Enunciado.** Sea $L$ LIC y $G = (V_N, V_T, P, S)$ una GLC (sin producciones $\\lambda$ salvo tratamiento aparte de $\\lambda \\in L$) con $L(G) = L$. Existe $n = a^{|V_N|+1}$ tal que toda $z \\in L$ con $|z| \\geq n$ se escribe $z = r\\,x\\,y\\,z'\\,s$ con (i) $|xz'| \\geq 1$, (ii) $|xyz'| \\leq n$, (iii) $r\\,x^i\\,y\\,z'^i\\,s \\in L$ para todo $i \\geq 0$.\n\n**Demostración.** Sea $T$ un árbol de derivación de $z$ **mínimo**: de altura mínima y, entre ésos, con menor cantidad de nodos. Como $|z| \\geq n = a^{|V_N|+1}$, por el lema previo (contrarrecíproco) la altura de $T$ es $\\geq |V_N|+1$. Tomo la rama más larga: tiene $\\geq |V_N|+1$ nodos internos etiquetados con no terminales, así que por palomar algún no terminal $A$ aparece dos veces. Elijo las **dos apariciones más cercanas a las hojas** en esa rama: $A_1$ (más arriba) y $A_2$ (más abajo, dentro del subárbol de $A_1$).\n\nSea $y$ la frontera del subárbol de $A_2$ y $xyz'$ la del subárbol de $A_1$ ($x$ e $z'$ son lo que $A_1$ genera a izquierda y derecha de $A_2$). Con $r, s$ el resto de $z$: $S \\Rightarrow^* rA_1s$, $A \\Rightarrow^* xAz'$ (de $A_1$ a $A_2$), $A \\Rightarrow^* y$ (subárbol de $A_2$). Entonces para todo $i \\geq 0$: $S \\Rightarrow^* rAs \\Rightarrow^* rx^iAz'^is \\Rightarrow^* rx^iyz'^is$ (aplicando $i$ veces $A \\Rightarrow^* xAz'$ y cerrando con $A \\Rightarrow^* y$; formalmente inducción en $i$). Esto prueba (iii).\n\n**(i) $|xz'| \\geq 1$.** Supongamos $x = z' = \\lambda$. Entonces el subárbol de $A_1$ y el de $A_2$ tienen la MISMA frontera $y$; reemplazando en $T$ el subárbol de $A_1$ por el de $A_2$ obtengo un árbol de derivación de la misma cadena $z$ con estrictamente menos nodos (y altura no mayor), contradiciendo la minimalidad de $T$.\n\n**(ii) $|xyz'| \\leq n$.** Entre $A_1$ y las hojas hay a lo sumo $|V_N| + 1$ niveles: si hubiera más, en el tramo por debajo de $A_1$ de la rama más larga habría otra repetición de no terminal más cercana a las hojas, contradiciendo la elección de $A_1, A_2$. Entonces el subárbol de $A_1$ tiene altura $\\leq |V_N|+1$ y por el lema previo su frontera cumple $|xyz'| \\leq a^{|V_N|+1} = n$. $\\blacksquare$"
+ },
+ {
+  "id": "2023-06-13-e1",
+  "fecha": "2023-06-13",
+  "toma": "Becher",
+  "formato": "escrito",
+  "dificultad": 2,
+  "temas": [
+   "02",
+   "05"
+  ],
+  "enunciado": "Un autómata es co-determinístico si no ocurre que $\\exists\\, q_1, q_2, q_3 \\in Q,\\ a \\in \\Sigma$ tales que $q_1 \\in \\delta(q_2, a) \\land q_1 \\in \\delta(q_3, a)$ con $q_2 \\neq q_3$. Dar un algoritmo que, dado un autómata $M$, construya un autómata co-determinístico $N$ tal que $L(M) = L(N)$, y dar su complejidad.",
+  "pistas": [
+   "Mirá la condición al espejo: «ningún estado recibe dos flechas con el mismo símbolo» es exactamente determinismo... leído con las flechas invertidas. ¿Qué operación sobre autómatas invierte flechas y qué le pasa al lenguaje?",
+   "Primer paso: tomá el reverso $M^R$ (invertir flechas, intercambiar iniciales y finales): reconoce $L^R$. Si lográs que $M^R$ sea determinístico, $M$ mirado desde $M^R$ queda co-determinístico.",
+   "Esqueleto: $N = ((M^R)^{det})^R$ — reversar, determinizar por subconjuntos, volver a reversar. Cada reverso preserva «reconoce el lenguaje reverso», así que $L(N) = (L(M)^R)^R = L(M)$; y el reverso de un AFD es co-determinístico por definición. Complejidad: la determinización manda, $O(2^{|Q|})$."
+  ],
+  "respuesta": "**Idea.** Co-determinístico = determinístico con las flechas al revés: si dos estados apuntaran a un mismo $q_1$ con el mismo símbolo, al invertir las flechas $q_1$ tendría dos transiciones distintas por ese símbolo. Entonces el problema se reduce a determinizar el reverso.\n\n**Algoritmo.** Entrada: $M$ (AFND-$\\lambda$ en general). Salida: $N$ co-determinístico con $L(N) = L(M)$.\n1. Construir $M^R$: invertir la dirección de todas las transiciones; los finales de $M$ pasan a ser iniciales (si hay varios, un nuevo inicial con $\\lambda$-transiciones) y $q_0$ pasa a ser el único final. Vale $L(M^R) = L(M)^R$ (un camino aceptador de $w$ en $M$ es, leído al revés, un camino aceptador de $w^R$ en $M^R$, y viceversa).\n2. Determinizar $M^R$ por construcción de subconjuntos (previa eliminación de $\\lambda$): se obtiene $D$, AFD con $L(D) = L(M)^R$. Un AFD tiene un único estado inicial y a lo sumo una transición saliente por símbolo desde cada estado.\n3. Devolver $N = D^R$ (invertir de nuevo): $L(N) = (L(M)^R)^R = L(M)$.\n\n**$N$ es co-determinístico:** las transiciones de $N$ son las de $D$ invertidas. Si en $N$ hubiera $q_1 \\in \\delta_N(q_2, a)$ y $q_1 \\in \\delta_N(q_3, a)$ con $q_2 \\neq q_3$, en $D$ habría dos transiciones distintas $\\delta_D(q_1, a) = q_2$ y $\\delta_D(q_1, a) = q_3$, contradiciendo que $D$ es determinístico. (Además $N$ tiene un único estado final: el inicial de $D$.)\n\n**Complejidad.** Paso 1 y 3: $O(|Q| + |\\delta|)$. Paso 2: peor caso $O(2^{|Q|})$ estados (construcción de subconjuntos). Total: $O(2^{|Q|})$ en tiempo y espacio, y la explosión es inevitable en el peor caso (hay familias donde todo co-determinístico equivalente es exponencialmente más grande).\n\n**Bonus:** este es el corazón del algoritmo de Brzozowski: determinizar el reverso dos veces ($N$ recortado a estados accesibles da directamente el AFD mínimo del reverso, y repetir da el AFD mínimo de $L$)."
+ },
+ {
+  "id": "2023-06-13-e2",
+  "fecha": "2023-06-13",
+  "toma": "Becher",
+  "formato": "escrito",
+  "dificultad": 3,
+  "temas": [
+   "08",
+   "12"
+  ],
+  "enunciado": "Dada $G$ una GLC sin producciones $\\lambda$ y no recursiva a izquierda, dar una cota ajustada $c$ tal que para todo $A, B \\in V_N$ y $\\alpha \\in (V_N \\cup V_T)^*$: si $A \\Rightarrow_L^* B\\alpha$ entonces $A \\Rightarrow_L^i B\\alpha$ con $i \\leq c$. (La cota tiene que ser ajustada: no alcanza la cota teórica vista en clase.)",
+  "pistas": [
+   "Es la cota que justifica la complejidad lineal del parsing LL(1). Mirá una derivación a izquierda $A \\Rightarrow_L A_1\\beta_1 \\Rightarrow_L A_2\\beta_2 \\Rightarrow_L \\ldots$ donde en cada paso se expande el símbolo de más a la izquierda, que sigue siendo no terminal: ¿puede repetirse alguna cabeza $A_j$?",
+   "Primer paso: si $A_j = A_k$ con $j < k$, entonces $A_j \\Rightarrow^+ A_j\\gamma$ para algún $\\gamma$ — eso es exactamente recursión a izquierda, que la hipótesis prohíbe. Entonces las cabezas $A, A_1, \\ldots$ son todas distintas.",
+   "Esqueleto: en el camino de $A$ hasta exponer $B$ a la izquierda, cada paso reemplaza la cabeza por otro no terminal (sin producir $\\lambda$, el prefijo no terminal no puede «desaparecer»); las cabezas son distintas dos a dos $\\Rightarrow$ a lo sumo $|V_N|$ cabezas $\\Rightarrow$ a lo sumo $|V_N| - 1$ pasos. Ajustada: cadena $A_1 \\to A_2\\gamma_2, \\ldots, A_{n-1} \\to A_n\\gamma_n$ la realiza con exactamente $|V_N|-1$ pasos."
+  ],
+  "respuesta": "**Cota: $c = |V_N| - 1$.**\n\n**Demostración de la cota.** Sea $A \\Rightarrow_L^i B\\alpha$ una derivación a izquierda de longitud mínima que lleva de $A$ a una forma sentencial con $B$ a la izquierda. Escribo la sucesión de formas: $A = C_0\\gamma_0 \\Rightarrow_L C_1\\gamma_1 \\Rightarrow_L \\cdots \\Rightarrow_L C_i\\gamma_i = B\\alpha$, donde $C_j$ es el símbolo de más a la izquierda de cada forma. Observaciones:\n\n(1) En cada paso se expande $C_j$ (es el más a la izquierda y es no terminal, porque llegamos hasta $B\\alpha$ con $B$ no terminal a la izquierda: si en algún momento el símbolo de la izquierda fuera terminal, ningún paso posterior podría quitarlo, pues no hay producciones $\\lambda$ ni forma de borrar un terminal ya expuesto — la derivación no podría terminar en $B\\alpha$... salvo que ese terminal esté «dentro de $\\alpha$», pero entonces la derivación mínima corta antes). En una derivación mínima, cada paso es de la forma $C_j \\to C_{j+1}\\beta$ con $C_{j+1}$ no terminal.\n\n(2) Las cabezas $C_0, C_1, \\ldots, C_i$ son **distintas dos a dos**: si $C_j = C_k$ con $j < k$, entonces $C_j \\Rightarrow_L^{k-j} C_j\\delta$ para algún $\\delta$, es decir $C_j$ es recursivo a izquierda — contradice la hipótesis. (Además, si se repitiera, la derivación no sería mínima: se puede cortar el ciclo.)\n\nDe (2): hay a lo sumo $|V_N|$ cabezas distintas en la sucesión $C_0, \\ldots, C_i$, o sea $i + 1 \\leq |V_N|$, luego $i \\leq |V_N| - 1$. $\\square$\n\n**La cota es ajustada.** Sea $V_N = \\{A_1, \\ldots, A_n\\}$ con producciones $A_j \\to A_{j+1} a$ para $j = 1, \\ldots, n-1$ (y $A_n \\to a$ para que la gramática sea útil), donde $a$ es un terminal. No hay recursión a izquierda ni producciones $\\lambda$, y $A_1 \\Rightarrow_L A_2 a \\Rightarrow_L A_3 aa \\Rightarrow_L \\cdots \\Rightarrow_L A_n a^{n-1}$: son exactamente $n - 1 = |V_N| - 1$ pasos, y no hay derivación más corta de $A_1$ a $A_n\\alpha$ (cada paso avanza un índice). Luego $c = |V_N| - 1$ no se puede bajar.\n\n**Contexto:** esta cota es la pieza que hace **lineal** al parser LL(1): entre dos consumos de terminal hay a lo sumo $|V_N| - 1$ expansiones."
+ },
+ {
+  "id": "2023-12-20-e1",
+  "fecha": "2023-12-20",
+  "toma": "?",
+  "formato": "escrito",
+  "dificultad": 3,
+  "temas": [
+   "05"
+  ],
+  "enunciado": "Demostrar Verdadero o Falso:\n\n(a) Si $M = (Q, \\Sigma, \\delta, q_0, F)$ es AFD completo y mínimo, entonces $\\overline{M} = (Q, \\Sigma, \\delta, q_0, Q \\setminus F)$ es AFD completo y mínimo también.\n\n(b) Sea $\\Sigma = \\{0,1\\}$. Para cada AFD $M$ completo con estado trampa $q_t \\in Q$, sea $M'$ el AFD que agrega un estado inicial nuevo $q_0'$ con $\\delta'(q_0', 0) = q_0$ y $\\delta'(q_0', 1) = q_t$ (el resto igual). Si $M$ es mínimo, ¿$M'$ es mínimo?",
+  "pistas": [
+   "Ambos ítems se deciden con el criterio de indistinguibilidad: un AFD accesible es mínimo sii todos sus estados son distinguibles de a pares. En (a) preguntate qué le pasa a la relación $\\equiv$ cuando cambiás $F$ por $Q \\setminus F$. En (b) sospechá: ¿el estado nuevo es realmente «nuevo» como comportamiento?",
+   "Primer paso: (a) $p \\equiv q$ depende de si $\\hat\\delta(p,\\alpha)$ y $\\hat\\delta(q,\\alpha)$ caen del mismo lado de la partición $(F, Q\\setminus F)$ — y esa partición ¡es la misma! (b) $q_0'$ acepta exactamente $0 \\cdot L(M)$; buscá un $M$ mínimo que ya tenga un estado $p$ con $L_p = 0 \\cdot L(M)$.",
+   "Esqueleto: (a) VERDADERO: misma $\\delta$, misma partición inducida $\\Rightarrow$ misma relación de indistinguibilidad $\\Rightarrow$ estados distinguibles siguen distinguibles; completo y accesible se preservan. (b) FALSO: tomá $L = (10)^*$, con estados $q_0$ (final), $p$ (con $\\delta(p,0) = q_0$, $\\delta(p,1) = q_t$) y $q_t$; en $M'$, $q_0' \\equiv p$."
+  ],
+  "respuesta": "**(a) VERDADERO.** $\\overline M$ es AFD y completo (misma $\\delta$ total). Accesibilidad: la misma (no depende de $F$). Minimalidad: en un AFD accesible, mínimo $\\iff$ todos los estados son distinguibles dos a dos. La relación de distinguibilidad sólo usa la pregunta «$\\hat\\delta(p, \\alpha) \\in F$ $\\Leftrightarrow$ $\\hat\\delta(q, \\alpha) \\in F$»; al pasar a $Q \\setminus F$ la respuesta a esa equivalencia es exactamente la misma (ambos lados se niegan). Formalmente: $\\hat\\delta(p,\\alpha) \\in F \\Leftrightarrow \\hat\\delta(q,\\alpha) \\in F$ sii $\\hat\\delta(p,\\alpha) \\in Q\\setminus F \\Leftrightarrow \\hat\\delta(q,\\alpha) \\in Q \\setminus F$. Luego $p \\equiv_{\\overline M} q \\iff p \\equiv_M q$: como en $M$ todos los pares eran distinguibles, en $\\overline M$ también, y $\\overline M$ es mínimo (además $L(\\overline M) = \\overline{L(M)}$ por completitud y determinismo). $\\blacksquare$\n\n**(b) FALSO.** Contraejemplo: $L = (10)^*$ sobre $\\{0,1\\}$. Su AFD mínimo completo es $M$ con estados $\\{q_0, p, q_t\\}$: $q_0$ final, $\\delta(q_0, 1) = p$, $\\delta(q_0, 0) = q_t$, $\\delta(p, 0) = q_0$, $\\delta(p, 1) = q_t$, y $q_t$ trampa. Es mínimo: $q_0$ es final y los otros no; $p$ y $q_t$ se distinguen con $\\gamma = 0$ ($\\hat\\delta(p, 0) = q_0 \\in F$, $\\hat\\delta(q_t, 0) = q_t \\notin F$). Tiene estado trampa y es completo: cumple todas las hipótesis.\n\nConstruyo $M'$: agrego $q_0'$ (inicial, no final) con $\\delta'(q_0', 0) = q_0$ y $\\delta'(q_0', 1) = q_t$. Pero el estado $p$ ya tenía **exactamente ese comportamiento**: $p \\notin F$, $\\delta(p, 0) = q_0$, $\\delta(p, 1) = q_t$. Entonces $q_0'$ y $p$ son indistinguibles (misma finalidad y mismos sucesores estado a estado $\\Rightarrow$ $\\forall \\alpha$ van a parar al mismo estado). Y $p$ sigue siendo accesible en $M'$ ($q_0' \\xrightarrow{0} q_0 \\xrightarrow{1} p$). Un AFD accesible con dos estados distintos indistinguibles no es mínimo: $M'$ tiene 4 estados pero $L(M') = 0 \\cdot (10)^*$ se reconoce con 3 (fusionando $q_0'$ con $p$). $\\blacksquare$\n\n**Moraleja:** agregar un estado «nuevo» no rompe la minimalidad sólo si su comportamiento es realmente nuevo; acá $L_{q_0'} = 0 \\cdot L(M)$ y nada impide que ese lenguaje residual ya esté presente en $M$."
+ },
+ {
+  "id": "2023-12-20-e2",
+  "fecha": "2023-12-20",
+  "toma": "?",
+  "formato": "escrito",
+  "dificultad": 3,
+  "temas": [
+   "07",
+   "10"
+  ],
+  "enunciado": "Un autómata contador es un autómata de pila con alfabeto de pila de sólo dos símbolos: el inicial (que representa el cero) y el que se usa para contar en unario. Cada transición incrementa el contador en uno, lo decrementa en uno o lo deja igual, y puede consultar si el contador es cero (tope de la pila). Demostrar Verdadero o Falso:\n\n(a) Si un lenguaje es reconocible por un autómata contador, su complemento también.\n(b) Si $L_A$ y $L_B$ son reconocibles por autómatas contadores, $L_A \\cup L_B$ también.\n(c) Si $L_A$ y $L_B$ son reconocibles por autómatas contadores, $L_A \\cap L_B$ también.",
+  "pistas": [
+   "Ayuda del enunciado: pensá cómo se demuestran y cómo se refutan las propiedades de clausura de los LIC. Los contadores son AP restringidos y NO determinísticos: la unión suele salir gratis, la intersección suele necesitar «dos memorias», y el complemento cae por De Morgan.",
+   "Primer paso: probá (b) con la construcción estándar de unión no determinística (nuevo inicial que elige rama por $\\lambda$). Para (c) buscá dos lenguajes de UN contador cuya intersección exija contar dos cosas a la vez: $\\{a^n b^n c^m\\}$ y $\\{a^m b^n c^n\\}$.",
+   "Esqueleto: (b) V: $\\lambda$-branch inicial, un solo contador porque las ramas no conviven. (c) F: $L_A \\cap L_B = \\{a^n b^n c^n\\}$, que ni siquiera es LIC (pumping) — y todo lenguaje de contador es LIC porque el contador es un AP. (a) F por De Morgan: si complemento y unión fueran cerradas, la intersección también, contradiciendo (c)."
+  ],
+  "respuesta": "Convención: un autómata contador es un AP $(Q, \\Sigma, \\{Z_0, I\\}, \\delta, q_0, Z_0, F)$; en particular **todo lenguaje de contador es LIC**. Conviene resolver en el orden (b), (c), (a).\n\n**(b) VERDADERO.** Sean $M_A, M_B$ contadores para $L_A, L_B$. Construyo $M_\\cup$: un estado inicial nuevo $q_0$ con $\\lambda$-transiciones (sin tocar el contador) hacia $q_0^A$ y $q_0^B$, y la unión disjunta de ambos autómatas. Es un autómata contador legítimo (un solo contador: las dos «copias» nunca se usan en el mismo cómputo, porque una vez elegida la rama el cómputo queda confinado a ella). $w \\in L(M_\\cup) \\iff$ alguna rama acepta $\\iff w \\in L_A \\cup L_B$. Acá el **no determinismo** es esencial.\n\n**(c) FALSO.** $L_A = \\{a^n b^n c^m : n, m \\geq 0\\}$ y $L_B = \\{a^m b^n c^n : n, m \\geq 0\\}$ son reconocibles por contadores: para $L_A$, incrementar con cada $a$, decrementar con cada $b$, aceptar si el contador vuelve a cero y después vienen sólo $c$'s (control de fases en los estados); $L_B$ simétrico. Pero $L_A \\cap L_B = \\{a^n b^n c^n : n \\geq 0\\}$ **no es LIC** (pumping LIC: la ventana $|xyz'| \\leq n$ toca a lo sumo dos tipos de letra y bombear desbalancea la tercera). Como todo lenguaje de contador es LIC, $L_A \\cap L_B$ no es reconocible por un contador. $\\blacksquare$\n\n**(a) FALSO (por De Morgan usando (b) y (c)).** Si la clase fuera cerrada por complemento, entonces con (b) tendríamos $L_A \\cap L_B = \\overline{\\overline{L_A} \\cup \\overline{L_B}}$ reconocible por contador para todos $L_A, L_B$ de contador — contradice (c). Luego el complemento no es cerrado. (Es el mismo argumento con que se refuta el complemento para LIC: unión cerrada + intersección no cerrada $\\Rightarrow$ complemento no cerrado.)"
+ },
+ {
+  "id": "2024-06-ent-e1",
+  "fecha": "2024-06-01",
+  "toma": "Becher",
+  "formato": "escrito",
+  "dificultad": 2,
+  "temas": [
+   "04",
+   "05"
+  ],
+  "enunciado": "[Entrenamiento jun-2024, Ej. 1] Dar un algoritmo que decida si dos expresiones regulares denotan el mismo lenguaje. Justificar la correctitud. Analizar la complejidad computacional de peor caso.",
+  "pistas": [
+   "Cadena de equivalencias efectivas: ER $\\to$ AFND-$\\lambda$ $\\to$ AFD, y sobre AFDs la igualdad de lenguajes es decidible. Dos caminos clásicos: diferencia simétrica + vacuidad, o minimizar y comparar. Acordate de justificar CADA eslabón y de decir dónde explota la complejidad.",
+   "Primer paso: convertí $r_1, r_2$ con Thompson (autómata de tamaño $O(|r_i|)$) y determinizá por subconjuntos ($O(2^{n_i})$ estados en el peor caso). Ya tenés dos AFDs $M_1, M_2$ completos sobre el mismo $\\Sigma$.",
+   "Esqueleto: armá el AFD producto que reconoce $(L_1 \\cap \\overline{L_2}) \\cup (\\overline{L_1} \\cap L_2)$ (finales: pares con exactamente una componente final) y decidí vacuidad con BFS. $L_1 = L_2 \\iff$ diferencia simétrica vacía. Complejidad: $O(|r_1| \\cdot |r_2|)$ sobre los AFD, pero $O(2^{|r_1|} \\cdot 2^{|r_2|})$ total por la determinización."
+  ],
+  "respuesta": "**Algoritmo.**\n1. Construir AFND-$\\lambda$ $N_i$ con $L(N_i) = L(r_i)$ (construcción de Thompson, inducción estructural en la ER): tamaño $O(|r_i|)$.\n2. Determinizar: eliminar $\\lambda$ y aplicar subconjuntos $\\Rightarrow$ AFDs $M_1, M_2$ **completos** sobre el mismo $\\Sigma$ (agregar trampa si falta). Peor caso $2^{O(|r_i|)}$ estados.\n3. AFD producto $M = M_1 \\times M_2$ con estados $(p, q)$, $\\delta((p,q),a) = (\\delta_1(p,a), \\delta_2(q,a))$, y finales $= \\{(p,q) :$ exactamente uno de $p, q$ es final$\\}$. Entonces $L(M) = (L_1 \\setminus L_2) \\cup (L_2 \\setminus L_1)$, la **diferencia simétrica**.\n4. Decidir $L(M) = \\emptyset$: BFS/DFS desde $(q_0^1, q_0^2)$; vacío sii ningún final es alcanzable. Responder «equivalentes» sii $L(M) = \\emptyset$.\n\n**Correctitud.** Thompson y subconjuntos preservan el lenguaje (teoremas de equivalencia ER/AFND-$\\lambda$/AFD). El producto simula ambos AFDs en paralelo: $\\hat\\delta((q_0^1,q_0^2), w) = (\\hat\\delta_1(q_0^1,w), \\hat\\delta_2(q_0^2,w))$ por inducción en $|w|$; con esa elección de finales, $w \\in L(M) \\iff w$ está en exactamente uno de los dos lenguajes. Y $L_1 = L_2 \\iff L_1 \\triangle L_2 = \\emptyset$ (conjuntos). La vacuidad por alcanzabilidad es correcta porque todo camino del grafo deletrea una cadena y viceversa.\n\n**Complejidad.** Pasos 1: $O(|r_1| + |r_2|)$. Paso 2: $O(2^{|r_1|} + 2^{|r_2|})$ en el peor caso (hay familias de ER que lo fuerzan, p.ej. $(0+1)^*1(0+1)^{n-1}$). Pasos 3–4: $O(|M_1| \\cdot |M_2| \\cdot |\\Sigma|)$. Total peor caso: $O(2^{|r_1|} \\cdot 2^{|r_2|})$. El problema es de hecho PSPACE-completo, así que no se espera algoritmo polinomial.\n\n**Alternativas válidas:** (i) minimizar $M_1$ y $M_2$ y chequear isomorfismo (el AFD mínimo es único salvo renombre de estados); (ii) Hopcroft–Karp sobre pares de estados con union-find, casi lineal sobre los AFDs."
+ },
+ {
+  "id": "2024-06-ent-e3",
+  "fecha": "2024-06-01",
+  "toma": "Becher",
+  "formato": "escrito",
+  "dificultad": 2,
+  "temas": [
+   "02",
+   "03"
+  ],
+  "enunciado": "[Entrenamiento jun-2024, Ej. 3] Dar un algoritmo que determine si un lenguaje regular dado es infinito. Justificar y dar la complejidad del algoritmo en el peor caso.",
+  "pistas": [
+   "Dos herramientas posibles: (i) teoría de grafos sobre el AFD (¿qué estructura del grafo genera infinitas cadenas?), (ii) el lema de pumping (¿qué largo de cadena aceptada certifica infinitud?). Elegí una y justificala bien; la otra es un buen «segundo algoritmo».",
+   "Primer paso: podá el AFD: quedate sólo con estados alcanzables desde $q_0$ Y desde los que se alcanza algún final (útiles). En ese grafo podado, un ciclo es «bombeable de verdad».",
+   "Esqueleto: $L$ infinito $\\iff$ el grafo podado tiene un ciclo (DFS, $O(|Q| + |\\delta|)$). Correctitud: ciclo útil $\\Rightarrow u v^i w \\in L$ para todo $i$ con $|v| \\geq 1$; sin ciclos el grafo es un DAG $\\Rightarrow$ finitos caminos $q_0 \\to F$ $\\Rightarrow$ $L$ finito. Alternativa pumping: infinito $\\iff$ acepta alguna $z$ con $n \\leq |z| < 2n$."
+  ],
+  "respuesta": "**Algoritmo (ciclos en el AFD podado).** (1) Obtener un AFD $M$ para $L$ (determinizar si hace falta). (2) Podar: calcular por BFS los estados **alcanzables** desde $q_0$ y (sobre el grafo inverso) los **co-alcanzables** (desde los que se llega a algún final); quedarse con los útiles = alcanzables $\\cap$ co-alcanzables. (3) Detectar si el subgrafo inducido tiene un **ciclo** (DFS con detección de back-edge, o Kahn). Responder: $L$ infinito $\\iff$ hay ciclo.\n\n**Correctitud.**\n($\\Leftarrow$) Si hay un ciclo por un estado útil $q$: existen $u$ ($q_0 \\to q$), $v$ con $|v| \\geq 1$ ($q \\to q$ por el ciclo) y $w$ ($q \\to$ final). Entonces $u v^i w \\in L$ para todo $i \\geq 0$ (inducción en $i$: recorrer el ciclo $i$ veces), y como $|v| \\geq 1$ son infinitas cadenas distintas.\n($\\Rightarrow$) Contrarrecíproco: si el grafo podado es acíclico (DAG), todo camino de $q_0$ a un final es simple respecto de sus aristas repetibles... más directo: en un DAG finito hay finitos caminos de $q_0$ a estados finales (cada camino tiene largo $< |Q|$ y no puede repetir estados), y cada cadena aceptada corresponde a un camino dentro del subgrafo útil; luego $L$ es finito.\n\n**Complejidad.** Pasos 2 y 3: $O(|Q| + |\\delta|) = O(|Q| \\cdot |\\Sigma|)$, lineal en el AFD. Si la entrada era AFND o ER, sumar la determinización: $O(2^n)$ peor caso. (De hecho para este problema se puede trabajar directo sobre el AFND, también con ciclos útiles: sigue lineal y se evita el exponencial.)\n\n**Algoritmo alternativo (pumping).** Con $n = |Q|$: $L$ es infinito $\\iff M$ acepta alguna cadena $z$ con $n \\leq |z| < 2n$. ($\\Leftarrow$) $|z| \\geq n$ + pumping $\\Rightarrow$ infinitas cadenas. ($\\Rightarrow$) si $L$ es infinito tiene cadenas $\\geq n$; tomando la más corta $\\geq n$, si midiera $\\geq 2n$, bombeando hacia abajo ($i=0$, con $1 \\leq |v| \\leq n$) obtengo otra $\\geq n$ estrictamente más corta, absurdo. Costo: probar $O(|\\Sigma|^{2n})$ cadenas — correcto pero exponencial; el de ciclos es mejor."
+ },
+ {
+  "id": "2024-06-ent-e4",
+  "fecha": "2024-06-01",
+  "toma": "Becher",
+  "formato": "escrito",
+  "dificultad": 2,
+  "temas": [
+   "02",
+   "07"
+  ],
+  "enunciado": "[Entrenamiento jun-2024, Ej. 4] ¿Cuántos autómatas finitos determinísticos con dos estados pueden construirse sobre el alfabeto $\\{0,1\\}$? ¿Cuántos autómatas finitos no determinísticos con dos estados sobre el mismo alfabeto? ¿Cuántos autómatas de pila con dos estados pueden construirse con alfabeto de entrada $A$, alfabeto de pila $Z$ y una cantidad máxima de $M$ símbolos escritos en cada transición?",
+  "pistas": [
+   "Es combinatoria pura: un autómata es una tupla, así que contás cuántas elecciones independientes hay para cada componente (función de transición, estado inicial, conjunto de finales) y multiplicás. La única sutileza es el codominio de $\\delta$ en cada modelo.",
+   "Primer paso (AFD): $\\delta: Q \\times \\Sigma \\to Q$ con $|Q| = 2$, $|\\Sigma| = 2$: hay $2^{2 \\cdot 2} = 16$ funciones. Faltan multiplicar inicial ($2$) y $F \\subseteq Q$ ($2^2 = 4$).",
+   "Esqueleto: AFD $= 16 \\cdot 2 \\cdot 4 = 128$. AFND: $\\delta: Q \\times \\Sigma \\to \\mathcal{P}(Q)$, $4^4 = 256$ funciones $\\Rightarrow 256 \\cdot 2 \\cdot 4 = 2048$. AP: el codominio de $\\delta$ son subconjuntos de $Q \\times Z^{\\leq M}$; contá $s = |Z^{\\leq M}| = \\sum_{i=0}^{M} |Z|^i$ y las $2^{2s}$ opciones por cada tripla $(q, a, z)$ con $a \\in A \\cup \\{\\lambda\\}$."
+  ],
+  "respuesta": "Cuento autómatas como **tuplas distintas** (con los estados etiquetados, digamos $Q = \\{q_1, q_2\\}$); no cuento clases de isomorfismo ni de equivalencia de lenguajes.\n\n**AFDs con $|Q| = 2$ sobre $\\{0,1\\}$.** Un AFD es $(Q, \\Sigma, \\delta, q_0, F)$. Elecciones independientes: $\\delta: Q \\times \\Sigma \\to Q$: el dominio tiene $2 \\cdot 2 = 4$ pares y cada uno elige entre $2$ estados $\\Rightarrow 2^4 = 16$ funciones. Estado inicial: $2$ opciones. Finales $F \\subseteq Q$: $2^2 = 4$ opciones. Total: $16 \\cdot 2 \\cdot 4 = \\mathbf{128}$. (Si se piden AFDs *parciales*, $\\delta$ elige en $Q \\cup \\{\\bot\\}$: $3^4 \\cdot 2 \\cdot 4 = 648$.)\n\n**AFNDs con $|Q| = 2$ sobre $\\{0,1\\}$ (sin $\\lambda$).** Ahora $\\delta: Q \\times \\Sigma \\to \\mathcal{P}(Q)$: cada uno de los $4$ pares elige un subconjunto de $Q$ ($2^2 = 4$ opciones) $\\Rightarrow 4^4 = 256$ funciones. Total: $256 \\cdot 2 \\cdot 4 = \\mathbf{2048}$. (Con transiciones $\\lambda$: el dominio pasa a $Q \\times (\\Sigma \\cup \\{\\lambda\\})$, $6$ pares: $4^6 \\cdot 2 \\cdot 4 = 32768$.)\n\n**APs con $|Q| = 2$, entrada $A$, pila $Z$, a lo sumo $M$ símbolos apilados por transición.** Un AP es $(Q, A, Z, \\delta, q_0, Z_0, F)$ con $\\delta: Q \\times (A \\cup \\{\\lambda\\}) \\times Z \\to \\mathcal{P}_{fin}(Q \\times Z^{\\leq M})$, donde $Z^{\\leq M} = \\bigcup_{i=0}^{M} Z^i$ tiene $s = \\sum_{i=0}^{M} |Z|^i = \\frac{|Z|^{M+1} - 1}{|Z| - 1}$ cadenas (si $|Z| > 1$). El dominio tiene $D = 2 \\cdot (|A| + 1) \\cdot |Z|$ triplas; para cada una, $\\delta$ elige un subconjunto de $Q \\times Z^{\\leq M}$, que tiene $2s$ elementos $\\Rightarrow 2^{2s}$ opciones. Además: inicial $2$, símbolo inicial de pila $|Z|$, finales $4$. Total:\n$$\\left(2^{2s}\\right)^{D} \\cdot 2 \\cdot |Z| \\cdot 4 = 2^{\\,4s(|A|+1)|Z|\\, +\\, 3} \\cdot |Z|.$$\nLo importante para el oral: identificar dominio y codominio de $\\delta$ en cada modelo y que el conteo es un producto de elecciones independientes; el número exacto es corolario."
+ },
+ {
+  "id": "2024-06-ent-e19",
+  "fecha": "2024-06-01",
+  "toma": "Becher",
+  "formato": "escrito",
+  "dificultad": 2,
+  "temas": [
+   "10",
+   "07"
+  ],
+  "enunciado": "[Entrenamiento jun-2024, Ej. 19] Mostrar que si $L$ es un lenguaje aceptado por un autómata de pila determinístico por pila vacía, entonces ninguna palabra de $L$ es prefijo propio de otra palabra de $L$. ¿Vale lo mismo si el autómata de pila es no determinístico?",
+  "pistas": [
+   "Pensá qué configuración tiene el APD justo después de aceptar $x$ por pila vacía, y qué necesitaría para seguir leyendo el resto $y$. ¿Puede un AP (determinístico o no) moverse con la pila vacía?",
+   "Primer paso: si $x \\in L$ y $xy \\in L$ con $y \\neq \\lambda$, el cómputo de $xy$ empieza igual que el de $x$... ¿por qué? Ahí es donde entra el determinismo: hay UN solo cómputo posible sobre cada entrada.",
+   "Esqueleto: por determinismo, al procesar $xy$ el autómata pasa por la configuración $(q, y, \\lambda)$ (la misma que al aceptar $x$, con $y$ pendiente). Pero $\\delta$ exige un tope de pila para moverse: con pila vacía no hay transición posible, así que $xy$ no puede aceptarse. Para el caso no determinístico: construí un AP chico que acepte $\\{a, aa\\}$ por pila vacía usando dos ramas."
+  ],
+  "respuesta": "**Parte 1 (APD): $L$ es libre de prefijos.** Supongamos que $x \\in L$ y $xy \\in L$ con $y \\neq \\lambda$. Como $x \\in L_\\lambda(M)$, existe un cómputo $(q_0, x, Z_0) \\vdash^* (q, \\lambda, \\lambda)$.\n\nAhora miro el cómputo de $M$ sobre la entrada $xy$. Como $M$ es **determinístico**, en cada configuración hay a lo sumo un movimiento posible (a lo sumo una transición aplicable entre las que leen el símbolo corriente y las $\\lambda$, y nunca ambas). Entonces el cómputo sobre $xy$ está forzado a coincidir, paso a paso, con el cómputo sobre $x$ mientras se consume el prefijo $x$: en ambos casos el autómata parte de $(q_0, \\cdot, Z_0)$ y las decisiones no dependen de lo que venga después sino sólo de (estado, símbolo leído/λ, tope). Luego, procesando $xy$, $M$ alcanza la configuración $(q, y, \\lambda)$.\n\nPero la función de transición de un AP es $\\delta: Q \\times (\\Sigma \\cup \\{\\lambda\\}) \\times \\Gamma \\to \\ldots$: **todo movimiento requiere un símbolo en el tope de la pila**. Con la pila vacía no hay movimiento aplicable, así que desde $(q, y, \\lambda)$ con $y \\neq \\lambda$ el cómputo se traba: nunca se llega a una configuración $(q', \\lambda, \\lambda)$. Como el cómputo era único (determinismo), $xy \\notin L_\\lambda(M)$. Contradicción. $\\blacksquare$\n\n(Corolario clásico: $a^*$, que es regular pero tiene prefijos propios en sí mismo — $a$ es prefijo de $aa$ —, no es aceptado por NINGÚN APD por pila vacía; por eso APD-PV es estrictamente más débil que APD por estado final.)\n\n**Parte 2 (AP no determinístico): NO vale.** Contraejemplo: $L = \\{a, aa\\}$ ($a$ es prefijo propio de $aa$). AP por pila vacía $M$ con estados $\\{q_0, q_1\\}$, pila $\\{Z_0\\}$ y transiciones: $\\delta(q_0, a, Z_0) = \\{(q_1, \\lambda),\\ (q_1, Z_0)\\}$ y $\\delta(q_1, a, Z_0) = \\{(q_1, \\lambda)\\}$. Sobre la entrada $a$, la rama que elige $(q_1, \\lambda)$ desapila $Z_0$ y acepta. Sobre $aa$, la rama que elige $(q_1, Z_0)$ conserva $Z_0$ y con la segunda $a$ desapila y acepta. Y no acepta nada más ($\\lambda$ no vacía la pila; $a^k$ con $k \\geq 3$ se queda sin pila antes de terminar la entrada en toda rama). El argumento de la parte 1 se cae exactamente porque el cómputo sobre $xy$ **no** está obligado a seguir la rama que aceptó $x$: puede existir otra rama que llegue al final de $x$ con la pila no vacía y siga."
+ }
+]

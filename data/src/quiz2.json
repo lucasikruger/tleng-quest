@@ -1,0 +1,790 @@
+[
+  {
+    "id": "07-01",
+    "topic": "07",
+    "level": 1,
+    "q": "En la tupla $M=\\langle Q,\\Sigma,\\Gamma,\\delta,q_0,Z_0,F\\rangle$ de un autómata de pila, ¿qué es $\\Gamma$?",
+    "options": [
+      "El alfabeto de entrada",
+      "El alfabeto de pila",
+      "El conjunto de estados finales",
+      "El símbolo inicial de la pila"
+    ],
+    "correct": 1,
+    "explain": "$\\Gamma$ es el alfabeto de pila; el de entrada es $\\Sigma$, los finales son $F$ y el fondo de pila es $Z_0\\in\\Gamma$."
+  },
+  {
+    "id": "07-02",
+    "topic": "07",
+    "level": 1,
+    "q": "¿Qué le pasa SIEMPRE a la pila al ejecutar una transición $\\delta(q,a,Z)=(p,\\gamma)$?",
+    "options": [
+      "Se apila $\\gamma$ arriba de $Z$, sin sacar nada",
+      "Queda intacta si $\\gamma=\\lambda$",
+      "Se desapila el tope $Z$ y se apila $\\gamma$ en su lugar",
+      "Solo cambia si $a\\ne\\lambda$"
+    ],
+    "correct": 2,
+    "explain": "Toda transición saca el tope $Z$ y empuja $\\gamma$ (su primer símbolo queda arriba). Para 'no tocar' la pila hay que reapilar $Z$ explícitamente ($\\gamma=Z$)."
+  },
+  {
+    "id": "07-03",
+    "topic": "07",
+    "level": 1,
+    "q": "¿Cuándo acepta un AP por pila vacía ($N(M)$)?",
+    "options": [
+      "Cuando consumió toda la entrada y la pila quedó vacía, sin importar el estado",
+      "Cuando la pila quedó vacía y además cayó en un estado final",
+      "Cuando consumió toda la entrada y en la pila quedó solo $Z_0$",
+      "Cuando vacía la pila, aunque falte entrada por leer"
+    ],
+    "correct": 0,
+    "explain": "En $N(M)$ solo importa: entrada consumida y pila vacía. Si la pila se vacía antes de terminar la entrada, la máquina se traba y NO acepta."
+  },
+  {
+    "id": "07-04",
+    "topic": "07",
+    "level": 2,
+    "q": "En el AP para $\\{a^nb^n\\}$ por estado final, la primera transición es $\\delta(q_0,a,Z_0)=(q_0,AZ_0)$ y no $(q_0,A)$. ¿Por qué?",
+    "options": [
+      "Para que el autómata sea no determinístico",
+      "Para preservar $Z_0$ al fondo y poder detectar 'pila balanceada' al final",
+      "Porque no se puede apilar un solo símbolo",
+      "Para poder aceptar la cadena vacía"
+    ],
+    "correct": 1,
+    "explain": "Si perdés $Z_0$, después no hay forma de reconocer que la pila quedó balanceada para saltar al final con $\\delta(q_1,\\lambda,Z_0)=(q_F,Z_0)$. La variante sin $Z_0$ sirve solo para aceptar por pila vacía."
+  },
+  {
+    "id": "07-05",
+    "topic": "07",
+    "level": 2,
+    "q": "En el AP para $\\{\\omega\\omega^r\\}$, ¿qué rol cumple la transición $\\delta(q_0,\\lambda,X)=(q_1,X)$?",
+    "options": [
+      "Consume el símbolo central de la palabra",
+      "Vacía la pila para aceptar",
+      "Adivina no-determinísticamente dónde está el centro y cruza a la fase de matcheo",
+      "Vuelve determinístico al autómata"
+    ],
+    "correct": 2,
+    "explain": "Sin marcador de centro, el AP tiene que apostar con una $\\lambda$-transición cuándo dejar de apilar. Esa adivinanza es justamente lo que fuerza el no-determinismo."
+  },
+  {
+    "id": "07-06",
+    "topic": "07",
+    "level": 2,
+    "q": "¿Por qué ningún APD que acepte por pila vacía reconoce $a^*$?",
+    "options": [
+      "Porque $a^*$ no es libre de prefijos: $a$ es prefijo propio de $aa$, y $N(\\text{APD})$ solo captura lenguajes libres de prefijos",
+      "Porque $a^*$ no es LIC",
+      "Porque los APD no pueden tener $\\lambda$-transiciones",
+      "Porque $a^*$ es infinito y la pila es finita"
+    ],
+    "correct": 0,
+    "explain": "Si el APD vació la pila al aceptar $a$, no le quedan jugadas para seguir leyendo y aceptar $aa$. Por eso APD por estado final es estrictamente más general que por pila vacía."
+  },
+  {
+    "id": "07-07",
+    "topic": "07",
+    "level": 3,
+    "q": "En la construcción 'estado final $\\to$ pila vacía' ($L(M)=N(M')$), ¿para qué se agrega el fondo nuevo $X_0$ debajo de $Z_0$?",
+    "options": [
+      "Para que el autómata resultante sea determinístico",
+      "Para poder aceptar $\\lambda$ sin transiciones extra",
+      "Para marcar el estado final del autómata original",
+      "Para no confundir 'vacié la pila de verdad' con un vaciado accidental de $M$ durante la simulación"
+    ],
+    "correct": 3,
+    "explain": "Si $M$ vaciara su pila sin estar en un final, sin $X_0$ el nuevo autómata aceptaría por error. El $X_0$ garantiza que la pila solo se vacía cuando pasamos por un final de $M$ y drenamos a propósito.",
+    "source": "Final 2020-02-21"
+  },
+  {
+    "id": "07-08",
+    "topic": "07",
+    "level": 3,
+    "q": "Para $L=\\{a^nb^m : 1\\le n\\le 2m\\}$ (cada $b$ 'vale' 1 o 2 $a$s), ¿por qué el AP resulta inevitablemente no determinístico?",
+    "options": [
+      "Porque $L$ no es libre de contexto",
+      "Porque al leer cada $b$ compiten dos reglas con el mismo $(q,b,A)$: desapilar una $A$ o dos, y hay que elegir sin lookahead",
+      "Porque hay que adivinar el centro de la palabra como en los palíndromos",
+      "Porque la pila no alcanza para contar hasta $2m$"
+    ],
+    "correct": 1,
+    "explain": "El rango '1 o 2' obliga a tener $\\delta(q_1,b,A)$ con dos jugadas posibles, violando el determinismo. Contraste: la razón fija $2\\!:\\!1$ sí sale determinística alternando estados por paridad."
+  },
+  {
+    "id": "08-01",
+    "topic": "08",
+    "level": 1,
+    "q": "¿Por qué las gramáticas $G=\\langle V_N,V_T,P,S\\rangle$ con producciones $A\\to\\alpha$ se llaman 'libres de contexto'?",
+    "options": [
+      "Porque el lado derecho $\\alpha$ solo puede tener terminales",
+      "Porque se reescribe un único no terminal sin importar qué símbolos lo rodean",
+      "Porque no pueden generar la cadena vacía",
+      "Porque no usan símbolo distinguido"
+    ],
+    "correct": 1,
+    "explain": "La izquierda es un solo no terminal $A\\in V_N$: se reemplaza igual en cualquier contexto. En las sensibles al contexto, en cambio, la reescritura depende de lo que rodea a $A$."
+  },
+  {
+    "id": "08-02",
+    "topic": "08",
+    "level": 1,
+    "q": "¿Cuándo es ambigua una GLC?",
+    "options": [
+      "Cuando alguna cadena tiene una derivación izquierda y una derecha distintas",
+      "Cuando el lenguaje admite dos gramáticas distintas",
+      "Cuando alguna cadena de $L(G)$ tiene dos árboles de derivación distintos",
+      "Cuando tiene recursión a izquierda"
+    ],
+    "correct": 2,
+    "explain": "Ambigua = alguna $w$ con $\\ge 2$ árboles (equivalente: $\\ge 2$ derivaciones izquierdas). Ojo: que la derivación izquierda difiera de la derecha es normal, corresponden al MISMO árbol."
+  },
+  {
+    "id": "08-03",
+    "topic": "08",
+    "level": 1,
+    "q": "¿Por cuál de estas operaciones NO están cerrados los LIC?",
+    "options": [
+      "Unión",
+      "Intersección",
+      "Concatenación",
+      "Intersección con un lenguaje regular"
+    ],
+    "correct": 1,
+    "explain": "$\\{a^nb^nc^m\\}\\cap\\{a^mb^nc^n\\}=\\{a^nb^nc^n\\}$ no es LIC. Sí están cerrados por unión, concatenación, Kleene, reversa e intersección con regular."
+  },
+  {
+    "id": "08-04",
+    "topic": "08",
+    "level": 2,
+    "q": "¿Qué lenguaje genera la gramática con única producción $S\\to aSb$?",
+    "options": [
+      "$\\{a^nb^n : n\\ge 1\\}$",
+      "$\\{a^nb^n : n\\ge 0\\}$",
+      "$a^*b^*$",
+      "$\\varnothing$"
+    ],
+    "correct": 3,
+    "explain": "$S$ no tiene caso base: toda derivación vuelve a mencionar $S$ y nunca llega a una cadena de terminales. Sin salida a terminales/$\\lambda$, el no terminal deriva $\\varnothing$."
+  },
+  {
+    "id": "08-05",
+    "topic": "08",
+    "level": 2,
+    "q": "Sea $S\\to AS'$, $S'\\to aS'b\\mid\\lambda$, $A\\to aA\\mid a$. ¿Qué lenguaje genera?",
+    "options": [
+      "$\\{a^nb^m : n>m\\ge 0\\}$",
+      "$\\{a^nb^m : n\\ge m\\ge 0\\}$",
+      "$\\{a^nb^n : n\\ge 1\\}$",
+      "$\\{a^nb^m : m>n\\ge 0\\}$"
+    ],
+    "correct": 0,
+    "explain": "$S'$ genera el bloque emparejado $a^kb^k$ y $A$ el excedente estricto $a^+$ ($j\\ge1$): total $a^{j+k}b^k$ con $n=j+k>k=m$. El $A\\to a$ obligatorio da la desigualdad ESTRICTA."
+  },
+  {
+    "id": "08-06",
+    "topic": "08",
+    "level": 2,
+    "q": "En la gramática desambiguada $E\\to E+T\\mid T$, $T\\to T*F\\mid F$, $F\\to(E)\\mid id$, ¿cómo queda fijada la precedencia de $*$ sobre $+$?",
+    "options": [
+      "El $+$ aparece antes que el $*$ en la lista de producciones",
+      "El operador de menor precedencia ($+$) queda más arriba en el árbol, así $*$ se evalúa primero, más abajo",
+      "La recursión a izquierda de $E$ hace que $+$ se evalúe primero",
+      "Los paréntesis de $F\\to(E)$ fuerzan la precedencia"
+    ],
+    "correct": 1,
+    "explain": "Un no terminal por nivel: el de menor precedencia va más arriba (se evalúa último). La recursión a izquierda fija asociatividad, no precedencia; los paréntesis solo 'reinician'."
+  },
+  {
+    "id": "08-07",
+    "topic": "08",
+    "level": 3,
+    "q": "En la construcción GLC $\\to$ AP (un solo estado, acepta por pila vacía), ¿qué hace el AP cuando el tope de pila es un no terminal $A$?",
+    "options": [
+      "Lo compara con el símbolo de entrada y avanza",
+      "Lo desapila y pasa a un estado de error si no hay producción",
+      "Con una $\\lambda$-transición lo reemplaza (no determinísticamente) por el cuerpo de alguna producción $A\\to\\alpha$",
+      "Apila el cuerpo de la producción arriba de $A$, sin sacarlo"
+    ],
+    "correct": 2,
+    "explain": "El AP simula la derivación más a la izquierda: no terminal en el tope $\\Rightarrow$ expandir por $\\lambda$; terminal en el tope $\\Rightarrow$ matchear con la entrada y desapilar. Arranca con $S$ en la pila."
+  },
+  {
+    "id": "08-08",
+    "topic": "08",
+    "level": 3,
+    "q": "¿Cuál de estos problemas sobre GLC/LIC es DECIDIBLE?",
+    "options": [
+      "¿Es ambigua la gramática $G$?",
+      "¿$L(G_1)=L(G_2)$?",
+      "¿$w\\in L(G)$?",
+      "¿$L(G)=\\Sigma^*$?"
+    ],
+    "correct": 2,
+    "explain": "La pertenencia se decide con CYK en tiempo cúbico (gramática en FNC). Ambigüedad, equivalencia y universalidad son indecidibles para LIC (reducciones a Post)."
+  },
+  {
+    "id": "09-01",
+    "topic": "09",
+    "level": 1,
+    "q": "¿Cuál es el enunciado correcto de las condiciones del pumping para LIC sobre $z=uvwxy$, $|z|\\ge n$?",
+    "options": [
+      "$|uv|\\le n$, $|v|\\ge 1$, y $uv^iw\\in L$ para todo $i\\ge 0$",
+      "$|vwx|\\le n$, $|vx|\\ge 1$, y $uv^iwx^iy\\in L$ para todo $i\\ge 0$",
+      "$|vx|\\le n$, $|vwx|\\ge 1$, y $uv^iwx^jy\\in L$ para todos $i,j\\ge 0$",
+      "$|vwx|\\le n$, $|vx|\\ge 1$, y $uv^iwx^iy\\in L$ solo para $i\\ge 1$"
+    ],
+    "correct": 1,
+    "explain": "Cinco partes, ventana $|vwx|\\le n$, algo para bombear ($|vx|\\ge 1$) y ambos trozos con el MISMO $i$, incluido $i=0$. La opción (a) es el pumping regular."
+  },
+  {
+    "id": "09-02",
+    "topic": "09",
+    "level": 1,
+    "q": "¿Cuál es la diferencia esencial entre el pumping regular y el de LIC?",
+    "options": [
+      "En LIC se bombean dos trozos $v$ y $x$ a la vez, siempre con el mismo exponente $i$",
+      "En LIC la constante $n$ es siempre mayor",
+      "En LIC solo se puede bombear con $i=0$ o $i=2$",
+      "En LIC se puede elegir la descomposición que más convenga"
+    ],
+    "correct": 0,
+    "explain": "Regular: 3 partes, un bloque bombeable. LIC: 5 partes, dos bloques que se repiten juntos. Bombear un solo trozo es el error estrella; y la descomposición NUNCA la elegís vos."
+  },
+  {
+    "id": "09-03",
+    "topic": "09",
+    "level": 1,
+    "q": "Un lenguaje $L$ cumple el lema de pumping para LIC. ¿Qué podés concluir?",
+    "options": [
+      "$L$ es libre de contexto",
+      "$L$ es regular",
+      "Nada: el lema es condición necesaria, no suficiente",
+      "$L$ es a lo sumo sensible al contexto"
+    ],
+    "correct": 2,
+    "explain": "El lema solo sirve para probar el NO: si falla, $L$ no es LIC. Cumplirlo no garantiza nada (hay lenguajes no LIC que lo cumplen)."
+  },
+  {
+    "id": "09-04",
+    "topic": "09",
+    "level": 2,
+    "q": "En la demo de que $\\{a^nb^nc^n\\}$ no es LIC con $z=a^nb^nc^n$, ¿qué rol clave cumple la cota $|vwx|\\le n$?",
+    "options": [
+      "Garantiza que $v$ y $x$ sean no vacíos",
+      "Impide que la ventana $vwx$ toque $a$s y $c$s a la vez, así $vx$ tiene a lo sumo dos tipos de letra",
+      "Asegura que el bombeo con $i=0$ acorte la cadena",
+      "Permite elegir la descomposición más cómoda"
+    ],
+    "correct": 1,
+    "explain": "Entre la última $a$ y la primera $c$ hay $n$ letras $b$: la ventana no cruza los extremos. Al bombear crecen a lo sumo dos conteos y el tercero queda igual $\\Rightarrow$ se descompensa."
+  },
+  {
+    "id": "09-05",
+    "topic": "09",
+    "level": 2,
+    "q": "Querés probar que $L=\\{w\\in\\{a,b,c\\}^* : \\#a=\\#b=\\#c\\}$ no es LIC. ¿Cuál es la movida más limpia?",
+    "options": [
+      "Pumping directo sobre cualquier $z\\in L$",
+      "Complementar $L$ y aplicar pumping al complemento",
+      "Intersecar con el regular $a^*b^*c^*$: como LIC $\\cap$ Regular = LIC, si $L$ fuera LIC lo sería $\\{a^nb^nc^n\\}$, absurdo",
+      "Intersecar con otro LIC para obtener $\\{a^nb^nc^n\\}$"
+    ],
+    "correct": 2,
+    "explain": "El pumping directo se complica porque $L$ permite reordenar letras. La intersección con un REGULAR sí es clausura válida de LIC; con otro LIC no lo es (ese sería un argumento inválido)."
+  },
+  {
+    "id": "09-06",
+    "topic": "09",
+    "level": 2,
+    "q": "Para probar que $\\{ww : w\\in\\{a,b\\}^*\\}$ no es LIC, ¿qué cadena maliciosa conviene elegir?",
+    "options": [
+      "$z=a^na^n$",
+      "$z=a^nb^na^nb^n$",
+      "$z=(ab)^n(ab)^n$",
+      "$z=a^nb^n$"
+    ],
+    "correct": 1,
+    "explain": "$a^{2n}$ o $(ab)^{2n}$ son demasiado uniformes: se bombean sin salir de $L$. Con $a^nb^na^nb^n$ la ventana $|vwx|\\le n$ no puede modificar las dos mitades de forma pareja."
+  },
+  {
+    "id": "09-07",
+    "topic": "09",
+    "level": 3,
+    "q": "En la demostración del pumping para LIC, ¿de dónde salen los trozos bombeables $v$ y $x$?",
+    "options": [
+      "De un ciclo de estados del autómata de pila, por palomar sobre $\\#Q$",
+      "De la repetición de un no terminal $A$ en la rama más larga del árbol (altura $\\ge |V_N|+1$), con $A\\overset{*}{\\Rightarrow}vAx$ y $A\\overset{*}{\\Rightarrow}w$",
+      "De las dos primeras producciones aplicadas en la derivación izquierda",
+      "De partir la cadena en cinco bloques de longitud $n/5$"
+    ],
+    "correct": 1,
+    "explain": "Con $n=a^{|V_N|+1}$ y el lema de altura ($a^h\\ge|z|$), la rama larga repite un no terminal por palomar. Reinsertar $A\\Rightarrow vAx$ da $uv^iwx^iy\\in L$ por inducción en $i$. El argumento de ciclo de estados es el pumping REGULAR.",
+    "source": "Final 2015-12-09"
+  },
+  {
+    "id": "09-08",
+    "topic": "09",
+    "level": 3,
+    "q": "Con la constante de pumping $n$ de un LIC $L$, ¿cuál es el criterio de decisión para '¿$L$ es infinito?'",
+    "options": [
+      "$L$ es infinito sii existe una palabra de longitud entre $n$ y $2n-1$",
+      "$L$ es infinito sii no existe ninguna palabra de longitud $<n$",
+      "$L$ es infinito sii existe una palabra de longitud múltiplo de $n$",
+      "Es indecidible para LIC"
+    ],
+    "correct": 0,
+    "explain": "Si hay palabra en $[n,2n-1]$ se bombea hacia arriba (infinitas); y si $L$ es infinito, despumpeando desde una palabra larga caés en esa franja. La finitud de LIC es decidible."
+  },
+  {
+    "id": "10-01",
+    "topic": "10",
+    "level": 1,
+    "q": "¿Cuándo es determinístico un AP?",
+    "options": [
+      "Cuando no tiene ninguna $\\lambda$-transición",
+      "Cuando $|\\delta(q,a,Z)|\\le 1$ para todo $a\\in\\Sigma$, sin más condiciones",
+      "Cuando para cada $(q,Z)$ hay a lo sumo una jugada aplicable y no coexisten leer entrada y $\\lambda$-mover",
+      "Cuando tiene un solo estado final"
+    ],
+    "correct": 2,
+    "explain": "Son DOS condiciones: sin bifurcación ($|\\delta|\\le 1$) y sin conflicto $\\lambda$ (si desde $(q,Z)$ hay $\\lambda$-movimiento, no puede haber lectura, y viceversa). Un APD puede tener $\\lambda$-transiciones."
+  },
+  {
+    "id": "10-02",
+    "topic": "10",
+    "level": 1,
+    "q": "¿Cuál es el testigo clásico de que LIC-det $\\subsetneq$ LIC?",
+    "options": [
+      "$\\{a^nb^n\\}$",
+      "$\\{ww^r : w\\in\\{a,b\\}^*\\}$",
+      "$\\{a^nb^nc^n\\}$",
+      "$\\{w\\#w^r\\}$"
+    ],
+    "correct": 1,
+    "explain": "Los palíndromos pares $\\{ww^r\\}$ son LIC pero ningún APD los reconoce (hay que adivinar el centro). $\\{a^nb^n\\}$ y $\\{w\\#w^r\\}$ SÍ son determinísticos; $\\{a^nb^nc^n\\}$ ni siquiera es LIC."
+  },
+  {
+    "id": "10-03",
+    "topic": "10",
+    "level": 1,
+    "q": "Los LIC determinísticos coinciden exactamente con...",
+    "options": [
+      "los lenguajes LL(1)",
+      "los lenguajes regulares",
+      "los lenguajes LR, reconocibles en tiempo lineal",
+      "los LIC con gramática no ambigua"
+    ],
+    "correct": 2,
+    "explain": "LIC-det = lenguajes LR($k$) = lo que parsea un compilador en $O(n)$. Todo LIC-det tiene gramática no ambigua, pero la vuelta no vale: hay LIC no-det con gramática no ambigua."
+  },
+  {
+    "id": "10-04",
+    "topic": "10",
+    "level": 2,
+    "q": "$\\{w\\#w^r\\}$ es LIC-det pero $\\{ww^r\\}$ no. ¿Qué cambia el $\\#$?",
+    "options": [
+      "Hace que el lenguaje sea libre de prefijos",
+      "Marca explícitamente el centro: el APD sabe cuándo pasar de apilar a matchear, sin adivinar",
+      "Reduce el tamaño del alfabeto de pila",
+      "Permite aceptar por estado final en vez de pila vacía"
+    ],
+    "correct": 1,
+    "explain": "El separador elimina la $\\lambda$-transición 'adivinadora' que compite con seguir apilando. Todo 'el enunciado te dice dónde parás' vuelve las cosas determinísticas."
+  },
+  {
+    "id": "10-05",
+    "topic": "10",
+    "level": 2,
+    "q": "Un AP tiene definidas $\\delta(q_0,a,X)=(q_0,AX)$ y $\\delta(q_0,\\lambda,X)=(q_1,X)$. ¿Es determinístico?",
+    "options": [
+      "Sí, porque cada una tiene una sola jugada",
+      "Sí, siempre que $q_0\\ne q_1$",
+      "No, porque los APD no admiten $\\lambda$-transiciones",
+      "No: en $(q_0,X)$ coexisten leer entrada y $\\lambda$-mover, conflicto $\\lambda$"
+    ],
+    "correct": 3,
+    "explain": "Viola la segunda condición: desde el mismo par (estado, tope) hay una transición que lee $a$ y otra $\\lambda$. Las $\\lambda$-transiciones en sí no están prohibidas en un APD."
+  },
+  {
+    "id": "10-06",
+    "topic": "10",
+    "level": 2,
+    "q": "Para complementar un LIC-det, ¿alcanza con invertir estados finales y no finales del APD?",
+    "options": [
+      "Sí, igual que en AFD",
+      "No: el APD puede no consumir toda la entrada o ciclar en $\\lambda$-movimientos; hay que volverlo continuo y marcar si pasó por un final",
+      "No, porque los LIC-det no están cerrados por complemento",
+      "Sí, pero solo si acepta por pila vacía"
+    ],
+    "correct": 1,
+    "explain": "El cierre por complemento de LIC-det es un teorema no trivial: APD continuo + marca $k\\in\\{1,2,3\\}$. Invertir finales a secas falla en las entradas que el APD nunca termina de leer."
+  },
+  {
+    "id": "10-07",
+    "topic": "10",
+    "level": 3,
+    "q": "¿Cuál es el argumento correcto de que $\\{ww^r\\}$ NO es LIC-det?",
+    "options": [
+      "El AP usual tiene una $\\lambda$-transición en conflicto, así que el lenguaje no es determinístico",
+      "No es libre de prefijos, y todo LIC-det debe serlo",
+      "Un APD que acepta $0^n11\\,0^n$ comprometió su pila en ese centro; ante $0^n11\\,0^n0^m11\\,0^m$ ya no tiene con qué comparar $m$ contra $n$",
+      "Falla el pumping para LIC"
+    ],
+    "correct": 2,
+    "explain": "Que UN autómata concreto sea no-det no prueba nada del lenguaje: hay que ver que NINGÚN APD puede, con el argumento estructural de la pila consumida (HMU pág. 249). Y $\\{ww^r\\}$ sí es LIC, el pumping no falla."
+  },
+  {
+    "id": "10-08",
+    "topic": "10",
+    "level": 3,
+    "q": "Los LIC-det están cerrados por complemento pero NO por unión. ¿Cómo se justifica el 'no' de la unión?",
+    "options": [
+      "Si fueran cerrados por unión, con complemento y De Morgan lo serían por intersección, y $\\{a^ib^ic^j\\}\\cap\\{a^ib^jc^j\\}$ tipo $\\{a^nb^nc^n\\}$ lo refuta",
+      "Porque los LIC tampoco están cerrados por unión",
+      "Porque la unión de dos APD siempre tiene conflicto $\\lambda$",
+      "Porque la unión no preserva ser libre de prefijos"
+    ],
+    "correct": 0,
+    "explain": "Cerrado por complemento + (hipotética) unión $\\Rightarrow$ cerrado por intersección vía De Morgan, absurdo. Ojo: los LIC a secas SÍ están cerrados por unión, ahí el argumento no corre."
+  },
+  {
+    "id": "11-01",
+    "topic": "11",
+    "level": 1,
+    "q": "En una gramática de atributos, un atributo SINTETIZADO de $N$ se calcula a partir de...",
+    "options": [
+      "los atributos del padre y los hermanos de $N$",
+      "los atributos de $N$ y de sus hijos: la información sube",
+      "solo los atributos de las hojas del árbol",
+      "el valor que le asigna el analizador sintáctico"
+    ],
+    "correct": 1,
+    "explain": "Sintetizado = sube (en la regla se define el atributo de la CABEZA de la producción). Heredado = baja o va de costado (padre y hermanos). Y es propiedad fija del atributo, no del nodo."
+  },
+  {
+    "id": "11-02",
+    "topic": "11",
+    "level": 1,
+    "q": "¿Qué atributos pueden tener los símbolos TERMINALES?",
+    "options": [
+      "Sintetizados y heredados, como cualquier símbolo",
+      "Solo heredados, porque no tienen hijos",
+      "Solo sintetizados, provistos por el analizador léxico",
+      "Ninguno: los terminales no llevan atributos"
+    ],
+    "correct": 2,
+    "explain": "Los terminales solo llevan sintetizados (ej. $num.val$), cuyo valor lo pone el lexer. Colgarle un heredado a un terminal es error clásico."
+  },
+  {
+    "id": "11-03",
+    "topic": "11",
+    "level": 1,
+    "q": "¿Cuál es la relación correcta entre gramáticas S-atribuidas y L-atribuidas?",
+    "options": [
+      "L-atribuidas $\\subseteq$ S-atribuidas, y solo las S están bien definidas",
+      "Son clases disjuntas: S para parsers LR y L para parsers LL",
+      "S-atribuidas $\\subseteq$ L-atribuidas, y ambas están siempre bien definidas",
+      "Ninguna de las dos garantiza estar bien definida"
+    ],
+    "correct": 2,
+    "explain": "Toda S es L (los sintetizados cumplen trivialmente la condición L). Ambas admiten orden de evaluación garantizado: bottom-up para S, DFS izquierda-a-derecha para L."
+  },
+  {
+    "id": "11-04",
+    "topic": "11",
+    "level": 2,
+    "q": "¿Qué efecto tiene una regla condicional $\\textbf{Cond: } p(\\dots)$ que evalúa a falso en un nodo?",
+    "options": [
+      "Invalida ese árbol de derivación: la cadena queda fuera del lenguaje",
+      "Detiene la evaluación de atributos pero la cadena sigue en el lenguaje",
+      "Hace que la gramática quede mal definida",
+      "Fuerza a reevaluar los atributos en otro orden topológico"
+    ],
+    "correct": 0,
+    "explain": "La COND restringe el lenguaje más allá de lo que puede la GLC sola: así una GA captura $a^nb^nc^n$ o $2k=n\\cdot m$, que no son LIC."
+  },
+  {
+    "id": "11-05",
+    "topic": "11",
+    "level": 2,
+    "q": "La condición $\\textbf{Cond: } (T.m==0)\\ \\textbf{or}\\ (T.n==A.n\\ \\textbf{and}\\ A.n\\ge 2)$ pretende exigir siempre $A.n\\ge 2$. ¿Qué falla?",
+    "options": [
+      "Nada: el or cubre ambos casos",
+      "Cuando $T.m==0$ la disyunción ya es verdadera y se saltea el chequeo $A.n\\ge 2$: acepta $n<2$ con bloque vacío",
+      "El and tiene menor precedencia que el or",
+      "Las condiciones no pueden mezclar atributos de símbolos distintos"
+    ],
+    "correct": 1,
+    "explain": "COND que cortocircuita casos borde: lo que debe valer SIEMPRE va afuera: $A.n\\ge 2\\ \\textbf{and}\\ (T.m==0\\ \\textbf{or}\\ T.n==A.n)$. Siempre testeá $\\lambda$, $n=0$, $m=0$."
+  },
+  {
+    "id": "11-06",
+    "topic": "11",
+    "level": 2,
+    "q": "En una producción, la regla $E.x = num.val$ define un heredado de $E$ usando un $num$ que está A LA DERECHA de $E$ en el cuerpo. ¿Qué propiedad rompe?",
+    "options": [
+      "Que la gramática sea S-atribuida (pero sigue siendo L)",
+      "Que los terminales solo tengan sintetizados",
+      "Que la gramática sea L-atribuida: un heredado solo puede depender de símbolos a su izquierda (o del padre)",
+      "Nada: es una regla válida en cualquier GA"
+    ],
+    "correct": 2,
+    "explain": "L-atribuida exige que los heredados miren solo hacia la izquierda; así el DFS izquierda-a-derecha alcanza para evaluar. Depender de algo a la derecha rompe ese orden (aunque la GA pueda seguir bien definida)."
+  },
+  {
+    "id": "11-07",
+    "topic": "11",
+    "level": 3,
+    "q": "Tenés la GA S-atribuida para $\\{a^nb^mc^{2k}\\mid 2k=nm\\}$ y te piden que $C$ NO tenga atributos sintetizados. ¿Cuál es la reescritura estándar?",
+    "options": [
+      "Mover la COND a la producción $C\\to ccC_1$",
+      "Es imposible: sin sintetizados en $C$ la gramática deja de estar bien definida",
+      "Duplicar el contador en $A$ y $B$ y comparar entre hermanos",
+      "Heredar el objetivo: $S\\to ABC$ define $C.count=A.count*B.count$, cada $C\\to ccC_1$ resta 2, y la COND $C.count==0$ va en la hoja $C\\to\\lambda$"
+    ],
+    "correct": 3,
+    "explain": "El conteo baja heredado decrementándose y se chequea en la hoja más profunda. Deja de ser S-atribuida pero sigue L-atribuida ($C.count$ depende solo de lo que está a su izquierda) y por lo tanto bien definida."
+  },
+  {
+    "id": "11-08",
+    "topic": "11",
+    "level": 3,
+    "q": "¿Qué se necesita EXACTAMENTE para que una gramática de atributos esté bien definida?",
+    "options": [
+      "Que sea S-atribuida o L-atribuida",
+      "Que toda regla necesaria esté definida y que el grafo de dependencias de TODO árbol sea acíclico (exista orden topológico)",
+      "Que ningún atributo sea heredado",
+      "Que el grafo de dependencias de la gramática (entre símbolos) no tenga ciclos"
+    ],
+    "correct": 1,
+    "explain": "Ser S o L es condición SUFICIENTE, no necesaria. Y el grafo de dependencias se arma por árbol, entre nodos concretos, no entre símbolos de la gramática."
+  },
+  {
+    "id": "12-01",
+    "topic": "12",
+    "level": 1,
+    "q": "¿Cómo se define el conjunto de símbolos directrices $SD(A\\to\\beta)$?",
+    "options": [
+      "$\\text{Prim}(\\beta)$, y si $\\beta$ es anulable se le une $\\text{Sig}(A)$",
+      "$\\text{Prim}(\\beta)\\cup\\text{Sig}(A)$ siempre",
+      "$\\text{Sig}(A)$, y si $\\beta$ no es anulable se le une $\\text{Prim}(\\beta)$",
+      "$\\text{Prim}(\\beta)\\cap\\text{Sig}(A)$"
+    ],
+    "correct": 0,
+    "explain": "El $\\text{Sig}(A)$ entra SOLO si el cuerpo puede anularse: si $\\beta\\Rightarrow^*\\lambda$, elegir esa producción se justifica por lo que viene después de $A$. Olvidarlo hace 'desaparecer' conflictos reales."
+  },
+  {
+    "id": "12-02",
+    "topic": "12",
+    "level": 1,
+    "q": "¿Cuál es la caracterización de gramática LL(1) por símbolos directrices?",
+    "options": [
+      "Para todo no terminal $A$, $\\text{Prim}(A)\\cap\\text{Sig}(A)=\\varnothing$",
+      "Para todo par $A\\to\\beta$, $A\\to\\gamma$ con $\\beta\\ne\\gamma$: $SD(A\\to\\beta)\\cap SD(A\\to\\gamma)=\\varnothing$",
+      "Cada celda de la tabla tiene al menos una producción",
+      "Ningún no terminal es anulable"
+    ],
+    "correct": 1,
+    "explain": "SDs disjuntos por par de producciones del mismo no terminal $\\iff$ cada celda de la tabla tiene a lo sumo una producción. Una celda con dos producciones = conflicto = no es LL(1)."
+  },
+  {
+    "id": "12-03",
+    "topic": "12",
+    "level": 1,
+    "q": "Ves que una gramática tiene recursión a izquierda ($E\\to E+T\\mid T$). ¿Qué sabés de entrada?",
+    "options": [
+      "Que el lenguaje no es LL(1)",
+      "Que es ambigua",
+      "Que la gramática NO es LL(1): hay que transformarla antes de calcular nada",
+      "Que hay que factorizar a izquierda"
+    ],
+    "correct": 2,
+    "explain": "Toda gramática LL es no recursiva a izquierda, así que esta no es LL(1). Pero es propiedad de la GRAMÁTICA: el lenguaje puede tener otra gramática equivalente que sí sea LL(1)."
+  },
+  {
+    "id": "12-04",
+    "topic": "12",
+    "level": 2,
+    "q": "¿Cómo queda $E\\to E+T\\mid T$ tras eliminar la recursión a izquierda directa?",
+    "options": [
+      "$E\\to E'T$, $E'\\to E'+T\\mid\\lambda$",
+      "$E\\to T+E\\mid T$",
+      "$E\\to TE'$, $E'\\to +TE'\\mid\\lambda$",
+      "$E\\to TE'$, $E'\\to T+E'\\mid\\lambda$"
+    ],
+    "correct": 2,
+    "explain": "Patrón $X\\to X\\alpha\\mid\\beta$ $\\Rightarrow$ $X\\to\\beta X'$, $X'\\to\\alpha X'\\mid\\lambda$ con $\\alpha=+T$, $\\beta=T$. La opción (b) cambia la asociatividad pero sigue sin ser el algoritmo (y deja prefijo común $T$)."
+  },
+  {
+    "id": "12-05",
+    "topic": "12",
+    "level": 2,
+    "q": "Para $E\\to TE'$, $E'\\to +TE'\\mid\\lambda$, $T\\to(E)\\mid id$, ¿cuánto vale $SD(E'\\to\\lambda)$?",
+    "options": [
+      "$\\{+\\}$",
+      "$\\{\\$,\\ )\\}$",
+      "$\\{\\$\\}$",
+      "$\\{(,\\ id\\}$"
+    ],
+    "correct": 1,
+    "explain": "Cuerpo anulable $\\Rightarrow$ $SD=\\text{Sig}(E')$. $E'$ queda al final de $E\\to TE'$ y de $E'\\to +TE'$, así que hereda $\\text{Sig}(E)=\\{\\$,\\,)\\}$ (el $)$ viene de $T\\to(E)$)."
+  },
+  {
+    "id": "12-06",
+    "topic": "12",
+    "level": 2,
+    "q": "En $E\\to TE'$, ¿por qué vale $\\text{Sig}(E)\\subseteq\\text{Sig}(E')$?",
+    "options": [
+      "Porque $E'$ es anulable y su Prim se propaga a $E$",
+      "Porque $E'$ queda al final del cuerpo: todo lo que puede seguir a $E$ puede aparecer justo después de $E'$ (herencia de Sig)",
+      "No vale: es al revés, $\\text{Sig}(E')\\subseteq\\text{Sig}(E)$",
+      "Porque $\\$\\in\\text{Sig}(X)$ para todo no terminal $X$"
+    ],
+    "correct": 1,
+    "explain": "Herencia hacia atrás: si $Y$ queda al final (o lo que le sigue es anulable) en una producción de $X$, entonces $\\text{Sig}(X)\\subseteq\\text{Sig}(Y)$. Olvidarla deja los SD de las producciones anulables incompletos. El $\\$$ solo arranca en $\\text{Sig}(S)$."
+  },
+  {
+    "id": "12-07",
+    "topic": "12",
+    "level": 3,
+    "q": "En la gramática del if-then-else, la celda $M[E,\\text{else}]$ tiene conflicto entre $E\\to\\text{else }S$ y $E\\to\\lambda$. ¿Cómo se resuelve 'a mano' y qué semántica queda?",
+    "options": [
+      "Se asigna else a $E\\to\\lambda$: cada else se asocia al if más lejano",
+      "Se elimina $E\\to\\lambda$ de la gramática",
+      "No se puede: la gramática debe reescribirse hasta ser LL(1)",
+      "Se asigna else a $E\\to\\text{else }S$: cada else se asocia al if más cercano"
+    ],
+    "correct": 3,
+    "explain": "Dejando solo $E\\to\\text{else }S$ en la celda, el parser cierra el else con el if abierto más cercano (la convención usual). Resolver al revés deja $E\\to\\text{else }S$ sin SD y rompe el parser."
+  },
+  {
+    "id": "12-08",
+    "topic": "12",
+    "level": 3,
+    "q": "Tras eliminar recursión a izquierda y factorizar, te queda $SD(R\\to aR)=\\{a\\}$ y $SD(R\\to\\lambda)=\\text{Sig}(R)=\\{a,\\$\\}$. ¿Qué concluís?",
+    "options": [
+      "Es LL(1) porque las producciones son distintas",
+      "Hay conflicto residual en $a$: la transformación mecánica no alcanzó, hay que rediseñar la gramática desde el lenguaje",
+      "El conflicto se ignora porque $\\lambda$ no consume entrada",
+      "Alcanza con volver a factorizar a izquierda"
+    ],
+    "correct": 1,
+    "explain": "$a$ está en ambos SD $\\Rightarrow$ celda doble $\\Rightarrow$ no es LL(1) con esta gramática. El caso típico ($(ba^+)^+$ y compañía) se arregla caracterizando $L(G)$ y diseñando directo una gramática donde cada terminal decida una única producción."
+  },
+  {
+    "id": "teo-01",
+    "topic": "teo",
+    "level": 1,
+    "q": "¿Cuál de estos problemas es INDECIDIBLE?",
+    "options": [
+      "¿$L(G_1)=L(G_2)$ para dos GLC?",
+      "¿$L(M_1)=L(M_2)$ para dos AFD?",
+      "¿$L(G)=\\varnothing$ para una GLC?",
+      "¿$w\\in L(G)$ para una GLC?"
+    ],
+    "correct": 0,
+    "explain": "La equivalencia de GLC es indecidible (reducción a Post). Para AFD es decidible (diferencia simétrica + vacío, o minimizar y comparar); vacío y pertenencia de GLC también son decidibles."
+  },
+  {
+    "id": "teo-02",
+    "topic": "teo",
+    "level": 1,
+    "q": "En la jerarquía de Chomsky, ¿qué autómata reconoce exactamente los lenguajes sensibles al contexto (tipo 1)?",
+    "options": [
+      "La máquina de Turing",
+      "El autómata linealmente acotado (MT no-det con cinta $\\le c\\cdot n$)",
+      "El autómata de pila determinístico",
+      "El autómata con dos pilas"
+    ],
+    "correct": 1,
+    "explain": "Tipo 1 $\\leftrightarrow$ autómata linealmente acotado. La MT (y el AP con dos pilas, que la equivale) corresponde al tipo 0, recursivamente enumerable."
+  },
+  {
+    "id": "teo-03",
+    "topic": "teo",
+    "level": 1,
+    "q": "V o F: 'Todo lenguaje regular cumple el lema de pumping para LIC.'",
+    "options": [
+      "Falso: los regulares cumplen solo el pumping regular",
+      "Falso: hay regulares finitos que no cumplen ningún pumping",
+      "Verdadero: Regular $\\subseteq$ LIC, y el lema vale para todo LIC",
+      "Verdadero, pero solo si el lenguaje es infinito"
+    ],
+    "correct": 2,
+    "explain": "Todo regular es LIC, así que el lema de pumping LIC le aplica. Los finitos lo cumplen vacuamente (ninguna palabra alcanza la constante $n$)."
+  },
+  {
+    "id": "teo-04",
+    "topic": "teo",
+    "level": 2,
+    "q": "¿Por qué '¿$L=\\Sigma^*$?' es decidible para un LIC-det $L$ (dado por un APD) pero no para un LIC general?",
+    "options": [
+      "Porque para LICD el APD se puede minimizar y comparar con el autómata de $\\Sigma^*$",
+      "Porque LICD está cerrado por complemento: $L=\\Sigma^*\\iff\\overline{L}=\\varnothing$, y el vacío de un LIC es decidible; los LIC no tienen ese cierre",
+      "No es cierto: es indecidible en ambos casos",
+      "Porque los LICD son regulares"
+    ],
+    "correct": 1,
+    "explain": "El cierre por complemento de LICD convierte universalidad en vacío, que sí se decide (símbolos activos). Para LIC generales $L=\\Sigma^*$ es indecidible.",
+    "source": "Final 2019-11-13"
+  },
+  {
+    "id": "teo-05",
+    "topic": "teo",
+    "level": 2,
+    "q": "¿Cuál es el algoritmo polinomial estándar para decidir si $L(G)=\\varnothing$ con $G$ una GLC?",
+    "options": [
+      "Correr CYK sobre todas las palabras de longitud $\\le |V_N|$",
+      "Construir el AP equivalente y buscar ciclos",
+      "Marcado por punto fijo de los no terminales 'activos' (que derivan en terminales): $L\\ne\\varnothing$ sii $S$ queda marcado",
+      "Aplicar el lema de pumping con $i=0$ hasta agotar"
+    ],
+    "correct": 2,
+    "explain": "Se itera $N_i=\\{A : A\\to\\alpha,\\ \\alpha\\in(N_{i-1}\\cup T)^*\\}$ hasta punto fijo, en tiempo polinomial. El criterio por pumping (¿hay palabra de longitud $<n$?) es correcto pero exponencial."
+  },
+  {
+    "id": "teo-06",
+    "topic": "teo",
+    "level": 2,
+    "q": "El algoritmo CYK para decidir $w\\in L(G)$ requiere y cuesta...",
+    "options": [
+      "Gramática en Forma Normal de Greibach, tiempo $O(|w|^2)$",
+      "Gramática en Forma Normal de Chomsky, tiempo $O(|w|^3)$",
+      "Cualquier GLC, tiempo lineal",
+      "Gramática LL(1), tiempo $O(|w|^3)$"
+    ],
+    "correct": 1,
+    "explain": "CYK es programación dinámica sobre subcadenas ($V[i,j]$ = no terminales que generan $w[i..j]$) y necesita FNC ($A\\to BC$, $A\\to a$). El tiempo lineal es privilegio de los LIC-det (LR/LL)."
+  },
+  {
+    "id": "teo-07",
+    "topic": "teo",
+    "level": 3,
+    "q": "Con la gramática $S\\to SS\\mid a$, ¿cuántos árboles de derivación distintos tiene $a^n$?",
+    "options": [
+      "$2^{n-1}$",
+      "$n!$",
+      "El número de Catalan $C_n$",
+      "El número de Catalan $C_{n-1}=\\frac{1}{n}\\binom{2(n-1)}{n-1}$"
+    ],
+    "correct": 3,
+    "explain": "Cada árbol es una forma de parentizar $n$ hojas con un operador binario: son los Catalan corridos, $C_{n-1}$. Es el conteo clásico de ambigüedad de $S\\to SS\\mid a$.",
+    "source": "Entrenamiento Becher jun-2024"
+  },
+  {
+    "id": "teo-08",
+    "topic": "teo",
+    "level": 3,
+    "q": "Para dos lenguajes LIC-det $L_1,L_2$ (dados por APD), ¿qué se sabe de '¿$L_1=L_2$?' y '¿$L_1\\subseteq L_2$?'",
+    "options": [
+      "Ambos son indecidibles, como para LIC generales",
+      "La equivalencia es decidible (Sénizergues 1997, Premio Gödel) pero la inclusión es indecidible",
+      "Ambos son decidibles por cierre bajo complemento",
+      "La inclusión es decidible pero la equivalencia no"
+    ],
+    "correct": 1,
+    "explain": "Sorprendente asimetría: $L_1=L_2$ para APD es decidible, pero $L_1\\subseteq L_2$ (y $L_1\\cap L_2=\\varnothing$) siguen indecidibles. El truco 'equivalencia = doble inclusión' no da un algoritmo."
+  }
+]
