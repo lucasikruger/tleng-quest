@@ -22,24 +22,28 @@ const ISLAS = [
       { icon: "🔨", label: "Construí 4 AFDs", route: "builder", done: () => builderDone(FA_CHALLENGES.filter((c) => c.mode === "afd"), 4) },
       { icon: "🌀", label: "Construí 2 AFNDs", route: "builder", done: () => builderDone(FA_CHALLENGES.filter((c) => c.mode === "afnd"), 2) },
       { icon: "⚡", label: "Quiz: 7+ correctas", route: "quiz/02", done: () => quizBest("02") >= 7 },
+      { icon: "🧠", label: "Modo Becher: equivalencia de AFD + conteo", route: "becher/02", done: () => becherKeyDone("02") },
     ] },
   { id: "03", icon: "🎈", name: "Isla Pumping", sub: "No-regularidad: EL tema de final", hot: true,
     mis: [
       { icon: "📖", label: "Lectura del tema", route: "doc/03_pumping_regular", done: () => State.isRead("03_pumping_regular") },
       { icon: "⚔️", label: "Ganá el Duelo de Pumping", route: "pumping/0", done: () => !!State.d.pumpWin },
       { icon: "⚡", label: "Quiz: 7+ correctas", route: "quiz/03", done: () => quizBest("03") >= 7 },
+      { icon: "🧠", label: "Modo Becher: decidir vacío/infinitud + complejidad", route: "becher/03", done: () => becherKeyDone("03") },
     ] },
   { id: "04", icon: "✳️", name: "Isla Regex", sub: "Derivadas, Arden, y el golf",
     mis: [
       { icon: "📖", label: "Lectura (probá ERs en vivo)", route: "doc/04_expresiones_regulares", done: () => State.isRead("04_expresiones_regulares") },
       { icon: "⛳", label: "ER Golf: 4 hoyos", route: "ergolf", done: () => builderDone(ER_CHALLENGES, 4) },
       { icon: "⚡", label: "Quiz: 7+ correctas", route: "quiz/04", done: () => quizBest("04") >= 7 },
+      { icon: "🧠", label: "Modo Becher: ¿dos ER equivalentes? (algoritmo)", route: "becher/04", done: () => becherKeyDone("04") },
     ] },
   { id: "05", icon: "🪓", name: "Isla Minimización", sub: "Subconjuntos, ≡ₖ, el mínimo", hot: true,
     mis: [
       { icon: "📖", label: "Lectura (mirá el mod 3 andar)", route: "doc/05_determinizacion_minimizacion", done: () => State.isRead("05_determinizacion_minimizacion") },
       { icon: "🔨", label: "Construí los AFD de módulo (★★★)", route: "builder/afd-09", done: () => chalDone("afd-09") },
       { icon: "⚡", label: "Quiz: 7+ correctas", route: "quiz/05", done: () => quizBest("05") >= 7 },
+      { icon: "🧠", label: "Modo Becher: minimalidad + reverso de Brzozowski", route: "becher/05", done: () => becherKeyDone("05") },
     ] },
   { id: "06", icon: "🧬", name: "Isla Gramáticas Regulares", sub: "GR ↔ AF, la equivalencia",
     mis: [
@@ -51,17 +55,20 @@ const ISLAS = [
       { icon: "📖", label: "Lectura del tema", route: "doc/07_automatas_pila", done: () => State.isRead("07_automatas_pila") },
       { icon: "🔨", label: "Construí 3 AP (con pila animada)", route: "pdalab", done: () => builderDone(PDA_CHALLENGES, 3) },
       { icon: "⚡", label: "Quiz: 7+ correctas", route: "quiz/07", done: () => quizBest("07") >= 7 },
+      { icon: "🧠", label: "Modo Becher: L(A)∩L(P) finito + APD=Σ*", route: "becher/07", done: () => becherKeyDone("07") },
     ] },
   { id: "08", icon: "🌳", name: "Isla GLC", sub: "Gramáticas: las plantillas de siempre",
     mis: [
       { icon: "📖", label: "Lectura del tema", route: "doc/08_glc", done: () => State.isRead("08_glc") },
       { icon: "🧪", label: "Gramática Lab: 4 lenguajes", route: "gramlab", done: () => builderDone(CFG_CHALLENGES, 4) },
       { icon: "⚡", label: "Quiz: 7+ correctas", route: "quiz/08", done: () => quizBest("08") >= 7 },
+      { icon: "🧠", label: "Modo Becher: CYK + qué es (in)decidible", route: "becher/08", done: () => becherKeyDone("08") },
     ] },
   { id: "09", icon: "🎈", name: "Isla Pumping LIC", sub: "5 partes, 2 tramos — cae SIEMPRE", hot: true,
     mis: [
       { icon: "📖", label: "Lectura del tema", route: "doc/09_pumping_lic", done: () => State.isRead("09_pumping_lic") },
       { icon: "⚡", label: "Quiz: 7+ correctas", route: "quiz/09", done: () => quizBest("09") >= 7 },
+      { icon: "🧠", label: "Modo Becher: pumping LIC para decidir vacío/infinito", route: "becher/09", done: () => becherKeyDone("09") },
     ] },
   { id: "10", icon: "🗼", name: "Isla Jerarquía", sub: "APD, Chomsky, el mapa completo",
     mis: [
@@ -78,6 +85,14 @@ const ISLAS = [
     mis: [
       { icon: "📖", label: "Lectura del tema", route: "doc/12_parsing_ll1", done: () => State.isRead("12_parsing_ll1") },
       { icon: "⚡", label: "Quiz: perfecto 8/8 (LL(1) no perdona)", route: "quiz/12", done: () => quizBest("12") >= 8 },
+      { icon: "🧠", label: "Modo Becher: ejemplos LL(k)/LR", route: "becher/12", done: () => becherKeyDone("12") },
+    ] },
+  { id: "algo", icon: "🧮", name: "Isla Algoritmos & Conteo", sub: "Lo que MÁS toma Becher: decidir con complejidad y contar", hot: true,
+    mis: [
+      { icon: "🧠", label: "Decisión sobre regulares (vacío/infinito/Σ*/equiv) + complejidad", route: "becher/decision", done: () => becherKeyDone("decision") },
+      { icon: "🧠", label: "Decisión sobre LIC (CYK, vacío, finitud; indecidibles)", route: "becher/decisionlic", done: () => becherKeyDone("decisionlic") },
+      { icon: "🔢", label: "Conteo de autómatas (AFD/AFND/AP con k estados)", route: "becher/conteo", done: () => becherKeyDone("conteo") },
+      { icon: "⚡", label: "Quiz de teoría: 7+ correctas", route: "quiz/teo", done: () => quizBest("teo") >= 7 },
     ] },
   { id: "final", icon: "🏰", name: "LA MESA FINAL", sub: "Becher te espera. Demostrá todo.", hot: true,
     mis: [
